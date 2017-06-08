@@ -1,0 +1,21 @@
+{
+  "name": "anb/abSuppliers",
+  "description": "Aanbieders suppliers API package",
+  "version": "0.0.1",
+  "keywords": ["API", "Aanbieders", "Suppliers"],
+  "homepage": "http://aanbieders.be",
+  "license": "proprietary",
+
+  "authors": [
+    {
+      "name": "Arslan Hameed",
+      "email": "arslan.hameed@zeropoint.it"
+    }
+  ],
+
+  "type": "wordpress-plugin",
+
+  "require": {
+    "php": ">=5.3.2"
+  }
+}
