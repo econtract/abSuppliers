@@ -19,6 +19,6 @@ if ( ! defined( 'WPINC' ) ) {
     die;
 }
 
-$supplier = wpal_create_instance(abSuppliers::class);
+$supplier = wpal_create_instance(AbSuppliers::class);
 add_shortcode( 'anb_suppliers', array( $supplier, 'prepareSuppliersForFrontEnd' ) );
 add_shortcode( 'anb_suppliers_count', array( $supplier, 'countSuppliersLogo' ) );

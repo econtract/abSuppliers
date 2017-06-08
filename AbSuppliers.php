@@ -10,7 +10,7 @@ use WP_Router;
  * Class abSuppliers
  * @package abSuppliers
  */
-class abSuppliers {
+class AbSuppliers {
 
     /**
      * @var string
@@ -64,7 +64,7 @@ class abSuppliers {
         $this->anbApi->setOutputType('array');
 
         // Create dynamic routes for suppliers
-        add_action('wp_router_generate_routes', array(get_class(), 'generate_routes'), 10, 1);
+        add_action('wp_router_generate_routes', array(get_class(), 'generateRoutes'), 10, 1);
     }
 
     /**
@@ -261,14 +261,14 @@ class abSuppliers {
        return $supplierLogos;
     }
 
-    public static function generate_routes( WP_Router $router )
+    public static function generateRoutes( WP_Router $router )
     {
         $router->add_route('aanbieders-suppliers-router', array(
             'path' => '^brands/(.*?)$',
             'query_vars' => array(
                 'argument' => 2,
             ),
-            'page_callback' => array(get_class(), 'suppliers_callback'),
+            'page_callback' => array(get_class(), 'suppliersCallback'),
             'page_arguments' => array('chummi', '123'),
             'access_callback' => TRUE,
             'title' => __( '' ),
@@ -284,7 +284,7 @@ class abSuppliers {
         ));
     }
 
-    public static function suppliers_callback( $argument, $test )
+    public static function suppliersCallback( $argument, $test )
     {
         echo '<p>Welcome to the WP Router sample page. You can find the code that generates this page in '.__FILE__.'</p>';
         echo '<p>This page helpfully tells you the value of the <code>sample_argument</code> query variable: '.esc_html($argument).'</p>';
