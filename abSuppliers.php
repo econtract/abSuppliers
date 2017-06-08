@@ -47,16 +47,7 @@ class abSuppliers {
         'mobile',
         'packs',
         'telephony',
-        'electricity',
-        'gas',
-        'mobile_internet',
-       // 'savings',
-       //   'longterm',
-       // 'creditcard',
-        'idtv',
-        'dualfuel_pack',
-        //'mobile_device_offer',
-        //'prepaid_creditcard'
+        'idtv'
     ];
 
     /**
