@@ -64,7 +64,7 @@ class AbSuppliers {
         $this->anbApi->setOutputType('array');
 
         // Create dynamic routes for suppliers
-        add_action('wp_router_generate_routes', array(get_class(), 'generateRoutes'), 10, 1);
+        add_action('wp_router_generate_routes', array($this, 'generateRoutes'), 10, 1);
     }
 
     /**
@@ -112,6 +112,7 @@ class AbSuppliers {
             foreach ($supplierSegment as $type => $supplierType) {
                 if( is_array( $supplierType) ){
                     foreach ($supplierType as $supplier) {
+                        $supplierList[$supplier['supplier_id']]['id'] = $supplier['supplier_id'];
                         $supplierList[$supplier['supplier_id']]['name'] = $supplier['name'];
 
                         if($atts['image-color-type']=='transparent' && isset($supplier['logo'][$atts['image-size']][$atts['image-color-type']]) ){
@@ -148,13 +149,17 @@ class AbSuppliers {
 
         foreach ($supplierLogos as $supplier) {
 
+            // poly lang exists
+            if (function_exists('pll_home_url')) {
+                $atts['link'] = pll_home_url().'brands/'.$supplier['id'];
+            }
+
             // If $counter is divisible by $mod...
             if($counter % $atts['mod'] == 0 && $counter != 0)
             {
                 // New div row
                 $response.= '</div><div class="row">';
             }
-
             $response .= '<' .$atts['mark-up'] .
                             ' class="' . $atts['mark-up-class'] . '">'.
                             '<a href="' .$atts['link'] . '"'.
@@ -246,7 +251,6 @@ class AbSuppliers {
     private function sortSupplier($supplierLogos, $atts)
     {
         $sortArray = array();
-
         foreach($supplierLogos as $person){
             foreach($person as $key=>$value){
                 if(!isset($sortArray[$key])){
@@ -255,21 +259,18 @@ class AbSuppliers {
                 $sortArray[$key][] = strtolower($value);
             }
         }
-
        array_multisort($sortArray[$atts['sortBy']], SORT_ASC, $supplierLogos);
 
        return $supplierLogos;
     }
 
-    public static function generateRoutes( WP_Router $router )
+    public function generateRoutes( WP_Router $router )
     {
         $router->add_route('aanbieders-suppliers-router', array(
             'path' => '^brands/(.*?)$',
-            'query_vars' => array(
-                'argument' => 2,
-            ),
-            'page_callback' => array(get_class(), 'suppliersCallback'),
-            'page_arguments' => array('chummi', '123'),
+            'query_vars' => [],
+            'page_callback' => array($this, 'suppliersCallback'),
+            'page_arguments' =>  [],
             'access_callback' => TRUE,
             'title' => __( '' ),
             /*'template' => array(
@@ -284,16 +285,42 @@ class AbSuppliers {
         ));
     }
 
-    public static function suppliersCallback( $argument, $test )
+    public function suppliersCallback(  )
     {
+        $supplier = $this->getUriSegment(2);
+       // $product  = $this->getUriSegment(3);
+
+
+        $getSupplier = $this->anbApi->getSuppliers(
+            [
+                'pref_cs' => $supplier,
+                'lang'        => function_exists('pll_current_language') ? pll_current_language() : 'nl'
+            ]
+        );
+
+       // var_dump($getSupplier); die;
+
+        //var_dump(parse_url('https://developer.wordpress.org/reference/functions/wp_parse_url/', PHP_URL_PATH));die;
+       // self::parseUrl();
         echo '<p>Welcome to the WP Router sample page. You can find the code that generates this page in '.__FILE__.'</p>';
-        echo '<p>This page helpfully tells you the value of the <code>sample_argument</code> query variable: '.esc_html($argument).'</p>';
+        echo '<p>This page helpfully tells you the value of the <code>sample_argument</code> query variable: '.esc_html('').'</p>';
 
         echo 'arslan file';
-        var_dump($argument, $test);
+
+       // var_dump(get_query_var( 'joni'));
     }
 
 
+    private function getUriSegments()
+    {
+        return explode("/", parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));
+    }
+
+    private function getUriSegment($n)
+    {
+        $segment = $this->getUriSegments();
+        return count($segment)>0&&count($segment)>=($n-1) ? $segment[$n] : '';
+    }
 
     //echo do_shortcode('[anb_suppliers mark-up="div" mark-up-class="col-sm-2 serviceProvider" lang="nl" segments="sme" products="internet" mod="6"]'); />
 }
