@@ -65,6 +65,9 @@ class AbSuppliers {
 
         // Create dynamic routes for suppliers
         add_action('wp_router_generate_routes', array($this, 'generateRoutes'), 10, 1);
+
+        // add string for the plugin to polylang
+        add_action('init', array($this, 'registerStringsForLocalization'));
     }
 
     /**
@@ -151,7 +154,7 @@ class AbSuppliers {
 
             // poly lang exists
             if (function_exists('pll_home_url')) {
-                $atts['link'] = pll_home_url().'brands/'.$supplier['id'];
+                $atts['link'] = pll_home_url().pll__('brands').'/'.$supplier['id'];
             }
 
             // If $counter is divisible by $mod...
@@ -203,7 +206,7 @@ class AbSuppliers {
 
             // poly lang exists
             if (function_exists('pll_home_url')) {
-                $atts['link'] = pll_home_url().'brands/'.$supplier['id'];
+                $atts['link'] = pll_home_url().pll__('brands').'/'.$supplier['id'];
             }
 
             // If $counter is divisible by $mod...
@@ -240,7 +243,7 @@ class AbSuppliers {
                                                 </ul>'.
                 '</div>'.
                 '<div class="btnWrapper">
-                   <a href="#" class="btn btn-primary">More Info</a>
+                   <a href='.$atts['link'].' class="btn btn-primary">More Info</a>
                  </div>'.
                 '</div>'.
                 '</div>
@@ -341,7 +344,7 @@ class AbSuppliers {
     public function generateRoutes( WP_Router $router )
     {
         $router->add_route('aanbieders-suppliers-router', array(
-            'path' => '^brands/(.*?)$',
+            'path' => '^'. pll__('brands').'/(.*?)$',
             'query_vars' => [],
             'page_callback' => array($this, 'suppliersCallback'),
             'page_arguments' =>  [],
@@ -368,7 +371,7 @@ class AbSuppliers {
         $getSupplier = $this->anbApi->getSuppliers(
             [
                 'pref_cs' => $supplier,
-                'lang'        => function_exists('pll_current_language') ? pll_current_language() : 'nl'
+                'lang'    => function_exists('pll_current_language') ? pll_current_language() : 'nl'
             ]
         );
 
@@ -396,6 +399,12 @@ class AbSuppliers {
     {
         $segment = $this->getUriSegments();
         return count($segment)>0&&count($segment)>=($n-1) ? $segment[$n] : '';
+    }
+
+
+    public function registerStringsForLocalization ()
+    {
+        pll_register_string('abSuppliers', 'brands', 'Suppliers', true);
     }
 
     //echo do_shortcode('[anb_suppliers mark-up="div" mark-up-class="col-sm-2 serviceProvider" lang="nl" segments="sme" products="internet" mod="6"]'); />
