@@ -133,7 +133,7 @@ class AbSuppliers {
      * @param $atts
      * @return string
      */
-    public function prepareSuppliersForFrontEnd( $atts )
+    public function prepareSuppliersForLandingPage($atts )
     {
         $atts = $this->prepareShortCodeAttributes($atts);
 
@@ -185,6 +185,80 @@ class AbSuppliers {
      * @param $atts
      * @return string
      */
+    public function prepareSuppliersForOverview($atts )
+    {
+        $atts = $this->prepareShortCodeAttributes($atts);
+
+        $getLogos = $this->getSupplierLogos($atts);
+        $supplierLogos =  $this->sortSupplier(
+            $getLogos,
+            $atts
+        );
+
+        $counter = 0;
+
+        $response = '<div class="row">';
+
+        foreach ($supplierLogos as $supplier) {
+
+            // poly lang exists
+            if (function_exists('pll_home_url')) {
+                $atts['link'] = pll_home_url().'brands/'.$supplier['id'];
+            }
+
+            // If $counter is divisible by $mod...
+            if($counter % $atts['mod'] == 0 && $counter != 0)
+            {
+                // New div row
+                $response.= '</div><div class="row">';
+            }
+            $response .= '<' .$atts['mark-up'] . ' class="col-sm-3" >'.
+                '<div class="provider" >'.
+                '<div class="bestReviewBadge" >'.
+                        '<span>BEST</span>'.
+                        '<span class="bold">Review</span>'.
+                '</div>'.
+                '<div class="providerWrapper" >'.
+                    '<img src="' .$supplier['logo'] . '"'.
+                          ' alt="' . $supplier['name'] . '">'.
+                '<div class="moreInfo">'
+                .'<h4>'. $supplier['name'] .'</h4>'.
+                '<div class="services">'.
+                '<ul class="list-unstyled list-inline">
+                                                    <li>
+                                                        <i class="fa fa-wifi"></i>
+                                                    </li>
+                                                    <li>
+                                                        <i class="fa fa-mobile"></i>
+                                                    </li>
+                                                    <li>
+                                                        <i class="fa fa-phone"></i>
+                                                    </li>
+                                                    <li>
+                                                        <i class="fa fa-tv"></i>
+                                                    </li>
+                                                </ul>'.
+                '</div>'.
+                '<div class="btnWrapper">
+                   <a href="#" class="btn btn-primary">More Info</a>
+                 </div>'.
+                '</div>'.
+                '</div>
+                    </div>'.
+                '</' .$atts['mark-up'] . '>';
+
+
+            $counter++;
+        }
+
+        return $response;
+    }
+
+
+    /**
+     * @param $atts
+     * @return string
+     */
     public function countSuppliersLogo( $atts )
     {
         $atts = $this->prepareShortCodeAttributes($atts);
@@ -220,7 +294,7 @@ class AbSuppliers {
             'sortBy' => 'name',
             'image-size' => '100x70',
             'image-color-type' => 'transparent',
-            'mark-up' => 'li',
+            'mark-up' => 'div',
             'mark-up-class' => '',
             'link' => '#',
             'detaillevel' => 'logo',
@@ -251,8 +325,8 @@ class AbSuppliers {
     private function sortSupplier($supplierLogos, $atts)
     {
         $sortArray = array();
-        foreach($supplierLogos as $person){
-            foreach($person as $key=>$value){
+        foreach($supplierLogos as $logo){
+            foreach($logo as $key=>$value){
                 if(!isset($sortArray[$key])){
                     $sortArray[$key] = array();
                 }
@@ -300,22 +374,24 @@ class AbSuppliers {
 
        // var_dump($getSupplier); die;
 
-        //var_dump(parse_url('https://developer.wordpress.org/reference/functions/wp_parse_url/', PHP_URL_PATH));die;
-       // self::parseUrl();
         echo '<p>Welcome to the WP Router sample page. You can find the code that generates this page in '.__FILE__.'</p>';
         echo '<p>This page helpfully tells you the value of the <code>sample_argument</code> query variable: '.esc_html('').'</p>';
 
         echo 'arslan file';
-
-       // var_dump(get_query_var( 'joni'));
     }
 
-
+    /**
+     * @return array
+     */
     private function getUriSegments()
     {
         return explode("/", parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));
     }
 
+    /**
+     * @param $n
+     * @return mixed|string
+     */
     private function getUriSegment($n)
     {
         $segment = $this->getUriSegments();

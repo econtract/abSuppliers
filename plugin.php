@@ -20,5 +20,6 @@ if ( ! defined( 'WPINC' ) ) {
 }
 
 $supplier = wpal_create_instance(AbSuppliers::class);
-add_shortcode( 'anb_suppliers', array( $supplier, 'prepareSuppliersForFrontEnd' ) );
+add_shortcode( 'anb_suppliers', array( $supplier, 'prepareSuppliersForLandingPage' ) );
 add_shortcode( 'anb_suppliers_count', array( $supplier, 'countSuppliersLogo' ) );
+add_shortcode( 'anb_suppliers_overview', array( $supplier, 'prepareSuppliersForOverview' ) );
