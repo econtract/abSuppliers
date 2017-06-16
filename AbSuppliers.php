@@ -97,7 +97,7 @@ class AbSuppliers {
 
             }
 
-           // set_transient('abCompareSuppliers', $suppliers, 60 * 60 * 2592000);
+           //set_transient('abCompareSuppliers', $suppliers, 60 * 60 * 2592000);
         }
 
         return $suppliers;
@@ -115,7 +115,7 @@ class AbSuppliers {
             foreach ($supplierSegment as $type => $supplierType) {
                 if( is_array( $supplierType) ){
                     foreach ($supplierType as $supplier) {
-                        $supplierList[$supplier['supplier_id']]['id'] = $supplier['supplier_id'];
+                        $supplierList[$supplier['supplier_id']]['slug'] = $supplier['slug'];
                         $supplierList[$supplier['supplier_id']]['name'] = $supplier['name'];
 
                         if($atts['image-color-type']=='transparent' && isset($supplier['logo'][$atts['image-size']][$atts['image-color-type']]) ){
@@ -154,7 +154,7 @@ class AbSuppliers {
 
             // poly lang exists
             if (function_exists('pll_home_url')) {
-                $atts['link'] = pll_home_url().pll__('brands').'/'.$supplier['id'];
+                $atts['link'] = pll_home_url().pll__('brands').'/'.$supplier['slug'];
             }
 
             // If $counter is divisible by $mod...
@@ -206,7 +206,7 @@ class AbSuppliers {
 
             // poly lang exists
             if (function_exists('pll_home_url')) {
-                $atts['link'] = pll_home_url().pll__('brands').'/'.$supplier['id'];
+                $atts['link'] = pll_home_url().pll__('brands').'/'.$supplier['slug'];
             }
 
             // If $counter is divisible by $mod...
@@ -350,18 +350,18 @@ class AbSuppliers {
             'page_arguments' =>  [],
             'access_callback' => TRUE,
             'title' => __( '' ),
-            /*'template' => array(
-                'views/display.php',
-                dirname( __FILE__ ) . '/views/display.php'
+            'template' => array(
+                'page-provider-details.php',
+                get_template_directory() . 'page-provider-details.php'
             )
-            */
-            /*'template' => array(
-                'mypage.php',
-                get_template_directory() . 'mypage.php'
-            )*/
         ));
     }
 
+    /**
+     *  call back will fetch data from API
+     *  will load Html file and embed it with theme
+     *  will replace content with specifically relates to supplier
+     */
     public function suppliersCallback(  )
     {
         $supplier = $this->getUriSegment(2);
@@ -375,12 +375,13 @@ class AbSuppliers {
             ]
         );
 
-       // var_dump($getSupplier); die;
+        if(session_id() == '') {
+            session_start();
+        }
 
-        echo '<p>Welcome to the WP Router sample page. You can find the code that generates this page in '.__FILE__.'</p>';
-        echo '<p>This page helpfully tells you the value of the <code>sample_argument</code> query variable: '.esc_html('').'</p>';
+        $_SESSION['supplierData'] = $getSupplier;
 
-        echo 'arslan file';
+         require 'views/display.php';
     }
 
     /**
