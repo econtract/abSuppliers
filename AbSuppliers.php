@@ -3,6 +3,7 @@
 namespace abSuppliers;
 
 use AnbApiClient\Aanbieders;
+use Locale;
 use WP_Router;
 
 
@@ -76,7 +77,7 @@ class AbSuppliers {
      */
     function getSuppliers($atts)
     {
-        //delete_transient( 'abCompareSuppliers' );
+        delete_transient( 'abCompareSuppliers' );
        // $suppliers = get_transient('abCompareSuppliers');
         $suppliers = null;
 
@@ -291,7 +292,7 @@ class AbSuppliers {
 
         // override default attributes with user attributes
         $atts = shortcode_atts([
-            'lang' => 'nl',
+            'lang' => Locale::getPrimaryLanguage(get_locale()),
             'segments' => $this->segments,
             'products' => $this->productTypes,
             'sortBy' => 'name',
@@ -367,13 +368,25 @@ class AbSuppliers {
         $supplier = $this->getUriSegment(2);
        // $product  = $this->getUriSegment(3);
 
+        $lang = $this->getLanguage();
 
         $getSupplier = $this->anbApi->getSuppliers(
             [
                 'pref_cs' => $supplier,
-                'lang'    => function_exists('pll_current_language') ? pll_current_language() : 'nl'
+                'lang'    => $lang
             ]
         );
+
+        $getProducts = $this->anbApi->getProducts(
+            [
+                'sid'         => $getSupplier[0]['supplier_id'],
+                'lang'        => $lang,
+                'cat'         => $this->productTypes,
+                'detaillevel' => ['texts','specifications']
+            ]
+        );
+
+        var_dump($getSupplier[0]['supplier_id'], $getProducts); die;
 
         if(session_id() == '') {
             session_start();
@@ -381,7 +394,6 @@ class AbSuppliers {
 
         $_SESSION['supplierData'] = $getSupplier;
 
-         require 'views/display.php';
     }
 
     /**
@@ -400,6 +412,14 @@ class AbSuppliers {
     {
         $segment = $this->getUriSegments();
         return count($segment)>0&&count($segment)>=($n-1) ? $segment[$n] : '';
+    }
+
+    /**
+     * @return bool|string
+     */
+    private function getLanguage()
+    {
+        return function_exists('pll_current_language') ? pll_current_language() : Locale::getPrimaryLanguage(get_locale());
     }
 
 
