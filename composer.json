@@ -1,7 +1,7 @@
 {
   "name": "anb/abSuppliers",
   "description": "Aanbieders suppliers API package",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "keywords": ["API", "Aanbieders", "Suppliers"],
   "homepage": "http://aanbieders.be",
   "license": "proprietary",
