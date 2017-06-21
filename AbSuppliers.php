@@ -386,7 +386,7 @@ class AbSuppliers {
             ]
         );
 
-        var_dump($getSupplier[0]['supplier_id'], $getProducts); die;
+       // var_dump($getSupplier[0]['supplier_id'], $getProducts); die;
 
         if(session_id() == '') {
             session_start();
