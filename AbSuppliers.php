@@ -118,6 +118,7 @@ class AbSuppliers {
                     foreach ($supplierType as $supplier) {
                         $supplierList[$supplier['supplier_id']]['slug'] = $supplier['slug'];
                         $supplierList[$supplier['supplier_id']]['name'] = $supplier['name'];
+                        $supplierList[$supplier['supplier_id']]['services'] = $supplier['services'];
 
                         if($atts['image-color-type']=='transparent' && isset($supplier['logo'][$atts['image-size']][$atts['image-color-type']]) ){
                             $supplierList[$supplier['supplier_id']]['logo'] = $supplier['logo'][$atts['image-size']]['transparent']['color'];
@@ -200,7 +201,6 @@ class AbSuppliers {
         );
 
         $counter = 0;
-
         $response = '<div class="row">';
 
         foreach ($supplierLogos as $supplier) {
@@ -228,20 +228,7 @@ class AbSuppliers {
                 '<div class="moreInfo">'
                 .'<h4>'. $supplier['name'] .'</h4>'.
                 '<div class="services">'.
-                '<ul class="list-unstyled list-inline">
-                                                    <li>
-                                                        <i class="fa fa-wifi"></i>
-                                                    </li>
-                                                    <li>
-                                                        <i class="fa fa-mobile"></i>
-                                                    </li>
-                                                    <li>
-                                                        <i class="fa fa-phone"></i>
-                                                    </li>
-                                                    <li>
-                                                        <i class="fa fa-tv"></i>
-                                                    </li>
-                                                </ul>'.
+                $this->acquireService($supplier).
                 '</div>'.
                 '<div class="btnWrapper">
                    <a href='.$atts['link'].' class="btn btn-primary">More Info</a>
@@ -250,7 +237,6 @@ class AbSuppliers {
                 '</div>
                     </div>'.
                 '</' .$atts['mark-up'] . '>';
-
 
             $counter++;
         }
@@ -334,7 +320,7 @@ class AbSuppliers {
                 if(!isset($sortArray[$key])){
                     $sortArray[$key] = array();
                 }
-                $sortArray[$key][] = strtolower($value);
+                $sortArray[$key][] = (is_string($value)) ?  strtolower($value) : $value;
             }
         }
        array_multisort($sortArray[$atts['sortBy']], SORT_ASC, $supplierLogos);
@@ -412,6 +398,33 @@ class AbSuppliers {
     {
         $segment = $this->getUriSegments();
         return count($segment)>0&&count($segment)>=($n-1) ? $segment[$n] : '';
+    }
+
+    /**
+     * acquire supplier services
+     * @param $provider
+     * @return string
+     */
+    private function acquireService($provider) {
+
+        $checkFor = [
+            'wifi'   => 'internet',
+            'mobile' => 'mobile',
+            'phone'  => 'telephony',
+            'tv'     => 'idtv'
+        ];
+
+        $html = '<ul class="list-unstyled list-inline">';
+
+        foreach ($provider['services'] as $key => $service) {
+            if (in_array($service, $checkFor)) {
+                $html .= '<li> <i class="fa fa-'. array_search($service, $checkFor).'"></i> </li>';
+            }
+        }
+
+        $html .= '</ul>';
+
+        return $html;
     }
 
     /**
