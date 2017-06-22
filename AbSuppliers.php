@@ -231,7 +231,7 @@ class AbSuppliers {
                 $this->acquireService($supplier).
                 '</div>'.
                 '<div class="btnWrapper">
-                   <a href='.$atts['link'].' class="btn btn-primary">More Info</a>
+                   <a href='.$atts['link'].' class="btn btn-primary">'.pll__('More Info').'</a>
                  </div>'.
                 '</div>'.
                 '</div>
@@ -379,6 +379,7 @@ class AbSuppliers {
         }
 
         $_SESSION['supplierData'] = $getSupplier;
+        $_SESSION['supplierProducts'] = $getProducts;
 
     }
 
