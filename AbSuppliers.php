@@ -368,7 +368,7 @@ class AbSuppliers {
                 'sid'         => $getSupplier[0]['supplier_id'],
                 'lang'        => $lang,
                 'cat'         => $this->productTypes,
-                'detaillevel' => ['texts','specifications']
+                'detaillevel' => ['reviews']
             ]
         );
 
