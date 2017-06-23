@@ -218,10 +218,10 @@ class AbSuppliers {
             }
             $response .= '<' .$atts['mark-up'] . ' class="col-sm-3" >'.
                 '<div class="provider" >'.
-                '<div class="bestReviewBadge" >'.
+                /*'<div class="bestReviewBadge" >'.
                         '<span>BEST</span>'.
                         '<span class="bold">Review</span>'.
-                '</div>'.
+                '</div>'.*/
                 '<div class="providerWrapper" >'.
                     '<img src="' .$supplier['logo'] . '"'.
                           ' alt="' . $supplier['name'] . '">'.
@@ -409,13 +409,16 @@ class AbSuppliers {
     private function acquireService($provider) {
 
         $checkFor = [
-            'wifi'   => 'internet',
             'mobile' => 'mobile',
             'phone'  => 'telephony',
-            'tv'     => 'idtv'
+            'tv'     => 'idtv',
+            'wifi'   => 'internet',
         ];
 
         $html = '<ul class="list-unstyled list-inline">';
+
+        // Alphabetically sort array to services consistent
+        sort($provider['services']);
 
         foreach ($provider['services'] as $key => $service) {
             if (in_array($service, $checkFor)) {
