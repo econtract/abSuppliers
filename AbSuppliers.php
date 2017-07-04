@@ -13,6 +13,8 @@ use WP_Router;
  */
 class AbSuppliers {
 
+    use Helper;
+
     /**
      * @var string
      */
@@ -87,10 +89,11 @@ class AbSuppliers {
                 foreach ($atts['products'] as $product) {
                     $suppliers[$segment][$product] = $this->anbApi->getSuppliers(
                         [
-                            'cat'         => trim($product),
-                            'lang'        => $atts['lang'],
-                            'sg'          => trim($segment),
-                            'detaillevel' => $atts['detaillevel']
+                            'cat'           => trim($product),
+                            'lang'          => $atts['lang'],
+                            'sg'            => trim($segment),
+                            'detaillevel'   => $atts['detaillevel'],
+                            'partners_only' => $atts['partners_only']
                         ]
                     );
 
@@ -138,8 +141,10 @@ class AbSuppliers {
      * @param $atts
      * @return string
      */
-    public function prepareSuppliersForLandingPage($atts )
+    public function displaySupplierPartners($atts)
     {
+        $atts['partners_only'] = true;
+
         $atts = $this->prepareShortCodeAttributes($atts);
 
         $getLogos = $this->getSupplierLogos($atts);
@@ -166,21 +171,21 @@ class AbSuppliers {
                 $response.= '</div><div class="row">';
             }
             $response .= '<' .$atts['mark-up'] .
-                            ' class="' . $atts['mark-up-class'] . '">'.
-                            '<a href="' .$atts['link'] . '"'.
-                            ' title="' . $supplier['name'] . '">'.
-                            '<img src="' .$supplier['logo'] . '"'.
-                            ' alt="' . $supplier['name'] . '">'.
-                            '</a>'.
-                          '</' .$atts['mark-up'] . '>';
+                ' class="' . $atts['mark-up-class'] . '">'.
+                '<a href="' .$atts['link'] . '"'.
+                ' title="' . $supplier['name'] . '">'.
+                '<img src="' .$supplier['logo'] . '"'.
+                ' alt="' . $supplier['name'] . '">'.
+                '</a>'.
+                '</' .$atts['mark-up'] . '>';
 
             $counter++;
         }
 
         if ($atts['mark-up'] == 'li') {
             return '<ul>'.
-                        $response;
-                   '</ul>';
+            $response;
+            '</ul>';
         }
         return $response;
     }
@@ -249,8 +254,10 @@ class AbSuppliers {
      * @param $atts
      * @return string
      */
-    public function countSuppliersLogo( $atts )
+    public function countSupplierPartnersLogo( $atts )
     {
+        $atts['partners_only'] = true;
+
         $atts = $this->prepareShortCodeAttributes($atts);
 
         $getLogos = $this->getSupplierLogos($atts);
@@ -288,7 +295,8 @@ class AbSuppliers {
             'mark-up-class' => '',
             'link' => '#',
             'detaillevel' => 'logo',
-            'mod'        => '6'
+            'mod'        => '6',
+            'partners_only' => false
 
         ], $atts, 'anb_suppliers');
 
@@ -384,24 +392,6 @@ class AbSuppliers {
     }
 
     /**
-     * @return array
-     */
-    private function getUriSegments()
-    {
-        return explode("/", parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));
-    }
-
-    /**
-     * @param $n
-     * @return mixed|string
-     */
-    private function getUriSegment($n)
-    {
-        $segment = $this->getUriSegments();
-        return count($segment)>0&&count($segment)>=($n-1) ? $segment[$n] : '';
-    }
-
-    /**
      * acquire supplier services
      * @param $provider
      * @return string
@@ -429,14 +419,6 @@ class AbSuppliers {
         $html .= '</ul>';
 
         return $html;
-    }
-
-    /**
-     * @return bool|string
-     */
-    private function getLanguage()
-    {
-        return function_exists('pll_current_language') ? pll_current_language() : Locale::getPrimaryLanguage(get_locale());
     }
 
 
