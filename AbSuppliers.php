@@ -254,10 +254,8 @@ class AbSuppliers {
      * @param $atts
      * @return string
      */
-    public function countSupplierPartnersLogo( $atts )
+    public function countSuppliersLogo( $atts )
     {
-        $atts['partners_only'] = true;
-
         $atts = $this->prepareShortCodeAttributes($atts);
 
         $getLogos = $this->getSupplierLogos($atts);
