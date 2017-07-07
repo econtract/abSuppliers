@@ -410,7 +410,7 @@ class AbSuppliers {
 
         foreach ($provider['services'] as $key => $service) {
             if (in_array($service, $checkFor)) {
-                $html .= '<li> <i class="fa fa-'. array_search($service, $checkFor).'"></i> </li>';
+                $html .= '<li> <i class="service-icons white '. array_search($service, $checkFor).'"></i> </li>';
             }
         }
 
