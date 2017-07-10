@@ -108,7 +108,6 @@ supplier partners are configuration deriven, you can drive desired set to data b
      products         = ""             // internet,mobile,packs,telephony,idtv , for multiple products you can pass it comma seperated (not mandatory)
      image-size       = ""             // 200x140 or 100x70 (not mandatory)
      image-color-type = ""             // transparent/grey/colored  (not mandatory)
-
      mod              = ""             // (not mandatory)
 
 ```
