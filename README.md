@@ -67,14 +67,14 @@ supplier partners are configuration deriven, you can drive desired set to data b
 
 ```php
 
-     mark-up          ="div"           // DIV or LI  (not mandatory)
-     mark-up-class    ="class-name"    // give your desired class name (not mandatory)
-     lang             =nl/fr"          // provide your desired language
-     segments         ="sme/consumer"  // segments sme or consumer  (not mandatory)
-     products         =""              // internet,mobile,packs,telephony,idtv , for multiple products you can pass it comma seperated (not mandatory)
-     image-size       =""              // 200x140 or 100x70 (not mandatory)
-     image-color-type = ""             // transparent/grey/colored  (not mandatory)
-     mod=""                            // (not mandatory)
+     mark-up          = "div"           // DIV or LI  (not mandatory)
+     mark-up-class    = "class-name"    // give your desired class name (not mandatory)
+     lang             = "nl/fr"         // provide your desired language
+     segments         = "sme/consumer"  // segments sme or consumer  (not mandatory)
+     products         = ""              // internet,mobile,packs,telephony,idtv , for multiple products you can pass it comma seperated (not mandatory)
+     image-size       = ""              // 200x140 or 100x70 (not mandatory)
+     image-color-type = ""              // transparent/grey/colored  (not mandatory)
+     mod=""                             // (not mandatory)
 
 ```
 by default if you haven't pass any segment and product to short it will look for the all possible records against it
@@ -101,15 +101,15 @@ supplier partners are configuration deriven, you can drive desired set to data b
 
 ```php
 
-     mark-up          = ""            // DIV or LI  // by default it will make a DIV markup (not mandatory)
-     mark-up-class    = "class-name"  // give your desired class name (not mandatory)
-     lang             = "nl/fr"       // provide your desired language 
-     segments         ="sme/consumer" // segments sme or consumer  (not mandatory)
-     products         =""             // internet,mobile,packs,telephony,idtv , for multiple products you can pass it comma seperated (not mandatory)
-     image-size       =""             // 200x140 or 100x70 (not mandatory)
-     image-color-type = ""            // transparent/grey/colored  (not mandatory)
+     mark-up          = ""             // DIV or LI  // by default it will make a DIV markup (not mandatory)
+     mark-up-class    = "class-name"   // give your desired class name (not mandatory)
+     lang             = "nl/fr"        // provide your desired language 
+     segments         = "sme/consumer" // segments sme or consumer  (not mandatory)
+     products         = ""             // internet,mobile,packs,telephony,idtv , for multiple products you can pass it comma seperated (not mandatory)
+     image-size       = ""             // 200x140 or 100x70 (not mandatory)
+     image-color-type = ""             // transparent/grey/colored  (not mandatory)
 
-     mod              =""             // (not mandatory)
+     mod              = ""             // (not mandatory)
 
 ```
 by default if you haven't pass any segment and product to short it will look for the all possible records against it
