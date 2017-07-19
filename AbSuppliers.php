@@ -356,7 +356,7 @@ class AbSuppliers {
      *  will replace content with specifically relates to supplier
      */
     public function suppliersCallback(  )
-    {
+    { $this->showReviews();
         $supplier = $this->getUriSegment(2);
        // $product  = $this->getUriSegment(3);
 
@@ -390,6 +390,82 @@ class AbSuppliers {
     }
 
     /**
+     * @return array
+     */
+    public function prepareSupplierProducts() {
+
+        $supplierProducts = $_SESSION['supplierProducts'];
+
+        $listProducts = [];
+        $temp = $packTemp = 0;
+
+        foreach ($supplierProducts as $product) {
+
+            if (!isset($listProducts[$product['producttype']])) {
+                $listProducts[$product['producttype']] = [];
+                $listProducts[$product['producttype']]['count'] = 0;
+                $i = 0;
+            }
+
+            if ($product['producttype'] == 'packs' &&
+                !isset($listProducts[$product['producttype']][$product['packtype']])) {
+                $listProducts[$product['producttype']][$product['packtype']] = [];
+                $listProducts[$product['producttype']][$product['packtype']]['count'] = 0;
+                $subPack = 0;
+            }
+
+            if (array_key_exists('packtype', $product)) {
+
+                //check if this is first loop then assign first value as $min
+                if ($subPack == 0) {
+                    $listProducts[$product['producttype']][$product['packtype']]['fee'] = $packTemp = $product['monthly_fee']['value'];
+                    $listProducts[$product['producttype']][$product['packtype']]['unit'] = $product['monthly_fee']['unit'];
+                }
+                //if this is not first loop then go in this if
+                if ($subPack > 0) {
+                    //check if this value of array is lesser than $packTemp
+                    if ($product['monthly_fee']['value'] < $packTemp) {
+                        $listProducts[$product['producttype']][$product['packtype']]['fee'] = $product['monthly_fee']['value'];
+                        $listProducts[$product['producttype']][$product['packtype']]['unit'] = $product['monthly_fee']['unit'];
+
+                    }
+                }
+
+                if (isset($listProducts[$product['producttype']][$product['packtype']]['count'])) {
+                    $listProducts[$product['producttype']][$product['packtype']]['count']++;
+                    $subPack++;
+                }
+
+            }
+
+            // Don't check fee for the top level packs
+            if ($product['producttype'] != 'packs' ) {
+
+                //check if this is first loop then assign first value as $min
+                if ($i == 0) {
+                    $listProducts[$product['producttype']]['fee'] = $temp = $product['monthly_fee']['value'];
+                    $listProducts[$product['producttype']]['unit'] = $product['monthly_fee']['unit'];
+                }
+                //if this is not first loop then go in this if
+                if ($i > 0) {
+                    //check if this value of array is lesser than $temp
+                    if ($product['monthly_fee']['value'] < $temp) {
+                        $listProducts[$product['producttype']]['fee'] = $product['monthly_fee']['value'];
+                        $listProducts[$product['producttype']]['unit'] = $product['monthly_fee']['unit'];
+
+                    }
+                }
+            }
+            if (isset($listProducts[$product['producttype']]['count'])) {
+                $listProducts[$product['producttype']]['count']++;
+                $i++;
+            }
+        }
+
+        return $listProducts;
+    }
+
+    /**
      * acquire supplier services
      * @param $provider
      * @return string
@@ -419,11 +495,115 @@ class AbSuppliers {
         return $html;
     }
 
+    /**
+     * @param $atts
+     * @return array
+     */
+    private function prepareReviewShortCodeParams($atts)
+    {
+        // get supplier slug from url
+        $supplier = $this->getUriSegment(2);
+
+        // normalize attribute keys, lowercase
+        $atts = array_change_key_case((array)$atts, CASE_LOWER);
+
+        // override default attributes with user attributes
+        return shortcode_atts([
+            'lang' => $this->getLanguage(),
+            'cat' => $this->productTypes,
+            'pref_cs' => $supplier,
+            'limit' => '1',
+            'html'  => true
+        ], $atts, 'anb_supplier_reviews');
+    }
+
+    /**
+     * @param $atts
+     * @return null
+     */
+    public function getReviews($atts = [])
+    {
+        $atts = $this->prepareReviewShortCodeParams($atts);
+        $reviews = null;
+
+        if (!$reviews) {
+            $reviews = $this->anbApi->getReviews(
+                $atts
+            );
+        }
+
+        return $reviews;
+    }
+
+    /**
+     * @param $atts
+     * @return string
+     */
+    public function showReviews($atts)
+    {
+        $reviews = $this->getReviews($atts);
+
+        $html = ' ';
+
+        if ($reviews) {
+
+            foreach ($reviews as $review){
+
+                if (strlen($review['texts']['contents']) > 250) {
+
+                    // truncate string
+                    $stringCut = substr($review['texts']['contents'], 0, 250);
+
+                    // make sure it ends in a word so assassinate doesn't become ass...
+                    $string = substr($stringCut, 0, strrpos($stringCut, ' ')).'...';
+                }
+
+                $html .= '<div class="col-md-5 infoPanel">
+                            <h6>'.$review['texts']['title'].'</h6>
+                            <p>'.$string.'</p>
+                            <p class="infoStamp">'.$review['date'].' - '.$review['author'].', '.$review['city'].'</p>
+                            <a href="#"><i class="fa fa-thumbs-o-up"></i>Is this useful?</a>
+                        </div>
+                        <div class="col-md-3 ratingPanel">
+                            <div class="row header">
+                                <div class="col-xs-9 ratingTitle">'.pll__('Total Rating').'</div>
+                                <div class="col-xs-3 countTitle">'.number_format((float)$review['score'], 1, '.', '').'</div>
+                            </div>
+                            '.$this->fetchReviewRatings($review['ratings']).'
+                      </div>';
+            }
+        }
+
+        return $html;
+    }
+
+    /**
+     * @param $reviewRatings
+     * @return string
+     */
+    private function fetchReviewRatings($reviewRatings)
+    {
+        $html = '';
+
+        if ($reviewRatings) {
+            foreach ($reviewRatings as $key => $reviewRating) {
+                $html .= '<div class="row">
+                <div class="col-xs-9 ratingCaption">' . (!empty($items['label']) ? $reviewRating['label'] : $key) . '</div>
+                <div class="col-xs-3 ratingCount">' . number_format((float)$reviewRating['score'], 1, '.', '') . '</div>
+            </div>';
+            }
+        }
+
+        return $html;
+    }
+
 
     public function registerStringsForLocalization ()
     {
         pll_register_string('abSuppliers', 'brands', 'Suppliers', true);
     }
+
+
 
     //echo do_shortcode('[anb_suppliers mark-up="div" mark-up-class="col-sm-2 serviceProvider" lang="nl" segments="sme" products="internet" mod="6"]'); />
 }
