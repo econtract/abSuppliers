@@ -561,7 +561,7 @@ class AbSuppliers {
                 $html .= '<div class="col-md-5 infoPanel">
                             <h6>'.$review['texts']['title'].'</h6>
                             <p>'.$string.'</p>
-                            <p class="infoStamp">'.$review['date'].' - '.$review['author'].', '.$review['city'].'</p>
+                            <p class="infoStamp">'.date("Y/m/d, H:i", strtotime($review['date'])).' - '.$review['author'].', '.$review['city'].'</p>
                             <a href="#"><i class="fa fa-thumbs-o-up"></i>Is this useful?</a>
                         </div>
                         <div class="col-md-3 ratingPanel">
