@@ -549,10 +549,10 @@ class AbSuppliers {
 
             foreach ($reviews as $review){
 
-                if (strlen($review['texts']['contents']) > 250) {
+                if (strlen($review['texts']['contents']) > 350) {
 
                     // truncate string
-                    $stringCut = substr($review['texts']['contents'], 0, 250);
+                    $stringCut = substr($review['texts']['contents'], 0, 350);
 
                     // make sure it ends in a word so assassinate doesn't become ass...
                     $string = substr($stringCut, 0, strrpos($stringCut, ' ')).'...';
@@ -562,7 +562,7 @@ class AbSuppliers {
                             <h6>'.$review['texts']['title'].'</h6>
                             <p>'.$string.'</p>
                             <p class="infoStamp">'.date("Y/m/d, H:i", strtotime($review['date'])).' - '.$review['author'].', '.$review['city'].'</p>
-                            <a href="#"><i class="fa fa-thumbs-o-up"></i>Is this useful?</a>
+                            <!--<a href="#"><i class="fa fa-thumbs-o-up"></i>Is this useful?</a>-->
                         </div>
                         <div class="col-md-3 ratingPanel">
                             <div class="row header">
@@ -588,7 +588,7 @@ class AbSuppliers {
         if ($reviewRatings) {
             foreach ($reviewRatings as $key => $reviewRating) {
                 $html .= '<div class="row">
-                <div class="col-xs-9 ratingCaption">' . (!empty($items['label']) ? $reviewRating['label'] : $key) . '</div>
+                <div class="col-xs-9 ratingCaption">' . (!empty($reviewRating['label']) ? $reviewRating['label'] : $key) . '</div>
                 <div class="col-xs-3 ratingCount">' . number_format((float)$reviewRating['score'], 1, '.', '') . '</div>
             </div>';
             }
