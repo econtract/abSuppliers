@@ -549,7 +549,8 @@ class AbSuppliers {
 
             foreach ($reviews as $review){
 
-                if (strlen($review['texts']['contents']) > 350) {
+                $string = $review['texts']['contents'];
+                if (strlen($string) > 350) {
 
                     // truncate string
                     $stringCut = substr($review['texts']['contents'], 0, 350);
@@ -566,8 +567,8 @@ class AbSuppliers {
                         </div>
                         <div class="col-md-3 ratingPanel">
                             <div class="row header">
-                                <div class="col-xs-9 ratingTitle">'.pll__('Total Rating').'</div>
-                                <div class="col-xs-3 countTitle">'.number_format((float)$review['score'], 1, '.', '').'</div>
+                                <div class="col-xs-8 ratingTitle">'.pll__('Total Rating').'</div>
+                                <div class="col-xs-4 countTitle">'.number_format((float)$review['score'], 1, '.', '').'</div>
                             </div>
                             '.$this->fetchReviewRatings($review['ratings']).'
                       </div>';
@@ -588,8 +589,8 @@ class AbSuppliers {
         if ($reviewRatings) {
             foreach ($reviewRatings as $key => $reviewRating) {
                 $html .= '<div class="row">
-                <div class="col-xs-9 ratingCaption">' . (!empty($reviewRating['label']) ? $reviewRating['label'] : $key) . '</div>
-                <div class="col-xs-3 ratingCount">' . number_format((float)$reviewRating['score'], 1, '.', '') . '</div>
+                <div class="col-xs-8 ratingCaption">' . (!empty($reviewRating['label']) ? $reviewRating['label'] : $key) . '</div>
+                <div class="col-xs-4 ratingCount">' . number_format((float)$reviewRating['score'], 1, '.', '') . '</div>
             </div>';
             }
         }
