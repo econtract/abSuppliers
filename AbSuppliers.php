@@ -115,6 +115,7 @@ class AbSuppliers {
     {
         $suppliers = $this->getSuppliers($atts);
 
+        $this->totalFoundLogos = 0;
         foreach ($suppliers as $segment => $supplierSegment) {
             foreach ($supplierSegment as $type => $supplierType) {
                 if( is_array( $supplierType) ){
@@ -122,6 +123,7 @@ class AbSuppliers {
                         $supplierList[$supplier['supplier_id']]['slug'] = $supplier['slug'];
                         $supplierList[$supplier['supplier_id']]['name'] = $supplier['name'];
                         $supplierList[$supplier['supplier_id']]['services'] = $supplier['services'];
+                        $supplierList[$supplier['supplier_id']]['id'] = $supplier['supplier_id'];
 
                         if($atts['image-color-type']=='transparent' && isset($supplier['logo'][$atts['image-size']][$atts['image-color-type']]) ){
                             $supplierList[$supplier['supplier_id']]['logo'] = $supplier['logo'][$atts['image-size']]['transparent']['color'];
@@ -133,6 +135,8 @@ class AbSuppliers {
                 }
             }
         }
+
+        $this->totalFoundLogos = count($supplierList);
 
         return $supplierList;
     }
@@ -335,7 +339,7 @@ class AbSuppliers {
     }
 
     public function generateRoutes( WP_Router $router )
-    {
+    { $this->suppliersForResultFilters();
         $router->add_route('aanbieders-suppliers-router', array(
             'path' => '^'. pll__('brands').'/(.*?)$',
             'query_vars' => [],
@@ -356,7 +360,7 @@ class AbSuppliers {
      *  will replace content with specifically relates to supplier
      */
     public function suppliersCallback(  )
-    { $this->showReviews();
+    {
         $supplier = $this->getUriSegment(2);
        // $product  = $this->getUriSegment(3);
 
@@ -598,6 +602,50 @@ class AbSuppliers {
         return $html;
     }
 
+    /**
+     * @return string
+     */
+    public function suppliersForResultFilters()
+    {
+        $atts = [] ;
+        $counter = 0;
+
+
+        $atts = $this->prepareShortCodeAttributes($atts);
+
+        $getLogos = $this->getSupplierLogos($atts);
+        $supplierSorted =  $this->sortSupplier(
+            $getLogos,
+            $atts
+        );
+
+        $mod = floor($this->totalFoundLogos/3);
+
+        $html = '<div class="col-md-4">';
+
+        foreach ($supplierSorted as $supplier) {
+
+            // If $counter is divisible by $mod...
+            if($counter % $mod == 0 && $counter != 0)
+            {
+                // New div row
+                $html.= '</div><div class="col-md-4">';
+            }
+            $html .= '<div class="checkbox fancyCheck">
+                        <input type="checkbox" name="usage_type" value="'.$supplier['id'].'" id="'.$supplier['id'].'">
+                        <label for="'.$supplier['name'].'">
+                            <i class="unchecked"></i>
+                            <i class="checked"></i>
+                            <span>'.$supplier['name'].'</span>
+                        </label>
+                    </div>';
+
+            $counter++;
+        }
+
+        //print ($html); die;
+        return $html;
+    }
 
     public function registerStringsForLocalization ()
     {
