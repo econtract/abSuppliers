@@ -80,7 +80,7 @@ class AbSuppliers {
     function getSuppliers($atts)
     {
         delete_transient( 'abCompareSuppliers' );
-       // $suppliers = get_transient('abCompareSuppliers');
+        //$suppliers = get_transient('abCompareSuppliers');
         $suppliers = null;
 
         if (!$suppliers) {
@@ -339,7 +339,7 @@ class AbSuppliers {
     }
 
     public function generateRoutes( WP_Router $router )
-    { $this->suppliersForResultFilters();
+    {
         $router->add_route('aanbieders-suppliers-router', array(
             'path' => '^'. pll__('brands').'/(.*?)$',
             'query_vars' => [],
@@ -607,43 +607,43 @@ class AbSuppliers {
      */
     public function suppliersForResultFilters()
     {
-        $atts = [] ;
+        $atts = [];
         $counter = 0;
-
 
         $atts = $this->prepareShortCodeAttributes($atts);
 
+
         $getLogos = $this->getSupplierLogos($atts);
-        $supplierSorted =  $this->sortSupplier(
+        $supplierSorted = $this->sortSupplier(
             $getLogos,
             $atts
         );
-
-        $mod = floor($this->totalFoundLogos/3);
+        $mod = floor($this->totalFoundLogos / 3);
 
         $html = '<div class="col-md-4">';
 
         foreach ($supplierSorted as $supplier) {
 
             // If $counter is divisible by $mod...
-            if($counter % $mod == 0 && $counter != 0)
-            {
+            if ($counter % $mod == 0 && $counter != 0) {
                 // New div row
-                $html.= '</div><div class="col-md-4">';
+                $html .= '</div><div class="col-md-4">';
             }
+
             $html .= '<div class="checkbox fancyCheck">
-                        <input type="checkbox" name="usage_type" value="'.$supplier['id'].'" id="'.$supplier['id'].'">
-                        <label for="'.$supplier['name'].'">
+                        <input type="checkbox" name="usage_type" value=' . $supplier['id'] . ' id=' . $supplier['name'] . '>
+                        <label for=' . $supplier['name'] . '>
                             <i class="unchecked"></i>
                             <i class="checked"></i>
-                            <span>'.$supplier['name'].'</span>
+                            <span>' . $supplier['name'] .' </span>
                         </label>
                     </div>';
 
             $counter++;
         }
 
-        //print ($html); die;
+        $html .= '</div>';
+
         return $html;
     }
 
