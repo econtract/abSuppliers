@@ -79,9 +79,9 @@ class AbSuppliers {
      */
     function getSuppliers($atts)
     {
-        delete_transient( 'abCompareSuppliers' );
-        //$suppliers = get_transient('abCompareSuppliers');
-        $suppliers = null;
+       // delete_transient( 'abCompareSuppliers' );
+        $suppliers = get_transient('abCompareSuppliers');
+        //$suppliers = null;
 
         if (!$suppliers) {
 
@@ -101,7 +101,7 @@ class AbSuppliers {
 
             }
 
-           //set_transient('abCompareSuppliers', $suppliers, 60 * 60 * 2592000);
+           set_transient('abCompareSuppliers', $suppliers, 60 * 60 * 2592000);
         }
 
         return $suppliers;
@@ -124,6 +124,7 @@ class AbSuppliers {
                         $supplierList[$supplier['supplier_id']]['name'] = $supplier['name'];
                         $supplierList[$supplier['supplier_id']]['services'] = $supplier['services'];
                         $supplierList[$supplier['supplier_id']]['id'] = $supplier['supplier_id'];
+                        $supplierList[$supplier['supplier_id']]['is_partner'] = $supplier['is_partner'];
 
                         if($atts['image-color-type']=='transparent' && isset($supplier['logo'][$atts['image-size']][$atts['image-color-type']]) ){
                             $supplierList[$supplier['supplier_id']]['logo'] = $supplier['logo'][$atts['image-size']]['transparent']['color'];
@@ -143,19 +144,29 @@ class AbSuppliers {
 
     /**
      * @param $atts
+     * @return array
+     */
+    private function preparedSuppliersLogoData($atts)
+    {
+        $atts = $this->prepareShortCodeAttributes($atts);
+
+        $getLogos = $this->getSupplierLogos($atts);
+        $supplierLogos = $this->sortSupplier(
+            $getLogos,
+            $atts
+        );
+        return array($atts, $supplierLogos);
+    }
+
+    /**
+     * @param $atts
      * @return string
      */
     public function displaySupplierPartners($atts)
     {
         $atts['partners_only'] = true;
 
-        $atts = $this->prepareShortCodeAttributes($atts);
-
-        $getLogos = $this->getSupplierLogos($atts);
-        $supplierLogos =  $this->sortSupplier(
-            $getLogos,
-            $atts
-        );
+        list($atts, $supplierLogos) = $this->preparedSuppliersLogoData($atts);
 
         $counter = 0;
 
@@ -201,13 +212,7 @@ class AbSuppliers {
      */
     public function prepareSuppliersForOverview($atts )
     {
-        $atts = $this->prepareShortCodeAttributes($atts);
-
-        $getLogos = $this->getSupplierLogos($atts);
-        $supplierLogos =  $this->sortSupplier(
-            $getLogos,
-            $atts
-        );
+        list($atts, $supplierLogos) = $this->preparedSuppliersLogoData($atts);
 
         $counter = 0;
         $response = '<div class="row">';
@@ -260,20 +265,9 @@ class AbSuppliers {
      */
     public function countSuppliersLogo( $atts )
     {
-        $atts = $this->prepareShortCodeAttributes($atts);
+        $this->preparedSuppliersLogoData($atts);
 
-        $getLogos = $this->getSupplierLogos($atts);
-        $supplierLogos =  $this->sortSupplier(
-            $getLogos,
-            $atts
-        );
-        $counter = 0;
-        foreach ($supplierLogos as $supplier) {
-            if ($supplier) {
-                $counter++;
-            }
-        }
-        return $counter;
+        return $this->totalFoundLogos;
     }
 
     /**
@@ -290,7 +284,7 @@ class AbSuppliers {
             'lang' => Locale::getPrimaryLanguage(get_locale()),
             'segments' => $this->segments,
             'products' => $this->productTypes,
-            'sortBy' => 'name',
+            'sort-by' => 'name',
             'image-size' => '100x70',
             'image-color-type' => 'transparent',
             'mark-up' => 'div',
@@ -320,9 +314,10 @@ class AbSuppliers {
     /**
      * @param $supplierLogos
      * @param $atts
-     * @return bool
+     * @param int $orderBy
+     * @return mixed
      */
-    private function sortSupplier($supplierLogos, $atts)
+    private function sortSupplier($supplierLogos, $atts, $orderBy = SORT_ASC)
     {
         $sortArray = array();
         foreach($supplierLogos as $logo){
@@ -333,7 +328,8 @@ class AbSuppliers {
                 $sortArray[$key][] = (is_string($value)) ?  strtolower($value) : $value;
             }
         }
-       array_multisort($sortArray[$atts['sortBy']], SORT_ASC, $supplierLogos);
+
+       array_multisort($sortArray[$atts['sort-by']], $orderBy, $supplierLogos);
 
        return $supplierLogos;
     }
@@ -602,6 +598,60 @@ class AbSuppliers {
         return $html;
     }
 
+
+    /**
+     * @return string
+     */
+    public function suppliersPartnersForResultFilters()
+    {
+        $atts = [
+          'sort-by' => 'is_partner'
+        ];
+        $html = '';
+        $nonPartner = false;
+
+        $atts = $this->prepareShortCodeAttributes($atts);
+
+        $getLogos = $this->getSupplierLogos($atts);
+        $supplierSorted = $this->sortSupplier(
+            $getLogos,
+            $atts,
+            SORT_DESC
+        );
+
+        $queryParams = $this->getUriQuery();
+
+        $selectedProviders = (!empty($queryParams) && isset($queryParams['pref_cs'])? $queryParams['pref_cs']: [] ) ;
+
+        foreach ($supplierSorted as $supplier) {
+
+            if ($supplier['is_partner'] == 0  && $nonPartner == 0) {
+                $nonPartner = true;
+                $html .= '<div class="moreFilterWrapper moreNonPartners"><a>'.pll__('+ more').'</a></div>';
+                $html .= '<div class="NonPartnersResult">';
+            }
+
+            $checked = (in_array($supplier['id'], $selectedProviders ) ? 'checked' : '');
+
+            $html .= '<div class="checkbox fancyCheck">
+                        <input type="checkbox" name=' . $supplier['name'] .' '.$checked.'  value=' . $supplier['id'] . ' id=' . $supplier['name'] . '>
+                        <label for=' . $supplier['name'] . '>
+                            <i class="unchecked"></i>
+                            <i class="checked"></i>
+                            <span>' . $supplier['name'] . ' </span>
+                        </label>
+                    </div>';
+
+        }
+
+        if ($nonPartner) {
+            $html .= '</div>';
+            $html .= '<div class="moreFilterWrapper lessNonPartners"><a>'.pll__('- less').'</a></div>';
+        }
+
+        return $html;
+    }
+
     /**
      * @return string
      */
@@ -610,14 +660,8 @@ class AbSuppliers {
         $atts = [];
         $counter = 0;
 
-        $atts = $this->prepareShortCodeAttributes($atts);
+        list($atts, $supplierSorted) = $this->preparedSuppliersLogoData($atts);
 
-
-        $getLogos = $this->getSupplierLogos($atts);
-        $supplierSorted = $this->sortSupplier(
-            $getLogos,
-            $atts
-        );
         $mod = floor($this->totalFoundLogos / 3);
 
         $html = '<div class="col-md-4">';
@@ -631,7 +675,7 @@ class AbSuppliers {
             }
 
             $html .= '<div class="checkbox fancyCheck">
-                        <input type="checkbox" name="usage_type" value=' . $supplier['id'] . ' id=' . $supplier['name'] . '>
+                        <input type="checkbox" name=' . $supplier['name'] .' value=' . $supplier['id'] . ' class=' . $supplier['name'] . '>
                         <label for=' . $supplier['name'] . '>
                             <i class="unchecked"></i>
                             <i class="checked"></i>
@@ -651,8 +695,6 @@ class AbSuppliers {
     {
         pll_register_string('abSuppliers', 'brands', 'Suppliers', true);
     }
-
-
 
     //echo do_shortcode('[anb_suppliers mark-up="div" mark-up-class="col-sm-2 serviceProvider" lang="nl" segments="sme" products="internet" mod="6"]'); />
 }

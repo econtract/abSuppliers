@@ -29,6 +29,19 @@ trait Helper {
     }
 
     /**
+     * @return array
+     */
+    public function getUriQuery()
+    {
+        parse_str(
+            parse_url($_SERVER['REQUEST_URI'], PHP_URL_QUERY),
+            $output
+        );
+
+        return $output;
+    }
+
+    /**
      * @return bool|string
      */
     public function getLanguage()
