@@ -623,8 +623,8 @@ class AbSuppliers {
             $checked = (in_array($supplier['id'], $selectedProviders ) ? 'checked' : '');
 
             $html .= '<div class="checkbox fancyCheck">
-                        <input type="checkbox" name=' . $supplier['name'] .' '.$checked.'  value=' . $supplier['id'] . ' id=' . $supplier['name'] . '>
-                        <label for=' . $supplier['name'] . '>
+                        <input type="checkbox"  name="pref_cs[]" '.$checked.'  value="' . $supplier['id'] . '" id="' . $supplier['name'] . '">
+                        <label for="' . $supplier['name'] . '">
                             <i class="unchecked"></i>
                             <i class="checked"></i>
                             <span>' . $supplier['name'] . ' </span>
