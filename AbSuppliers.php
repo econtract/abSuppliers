@@ -47,10 +47,10 @@ class AbSuppliers {
      */
     public $productTypes = [
         'internet',
-        'mobile',
         'packs',
-        'telephony',
-        'idtv'
+        // 'mobile',
+        //'telephony',
+        //'idtv'
     ];
 
     /**
@@ -79,29 +79,22 @@ class AbSuppliers {
      */
     function getSuppliers($atts)
     {
-        delete_transient( 'abCompareSuppliers' );
-       // $suppliers = get_transient('abCompareSuppliers');
+        delete_transient('abCompareSuppliers');
+        // $suppliers = get_transient('abCompareSuppliers');
         $suppliers = null;
 
         if (!$suppliers) {
+            $suppliers = $this->anbApi->getSuppliers(
+                [
+                    'cat'           => $atts['products'],
+                    'lang'          => $atts['lang'],
+                    'detaillevel'   => $atts['detaillevel'],
+                    'partners_only' => $atts['partners_only'],
+                    //'sg'          => trim($segment)
+                ]
+            );
 
-            foreach ($atts['segments'] as $segment) {
-                foreach ($atts['products'] as $product) {
-                    $suppliers[$segment][$product] = $this->anbApi->getSuppliers(
-                        [
-                            'cat'           => trim($product),
-                            'lang'          => $atts['lang'],
-                            'sg'            => trim($segment),
-                            'detaillevel'   => $atts['detaillevel'],
-                            'partners_only' => $atts['partners_only']
-                        ]
-                    );
-
-                }
-
-            }
-
-          // set_transient('abCompareSuppliers', $suppliers, 60 * 60 * 2592000);
+            // set_transient('abCompareSuppliers', $suppliers, 60 * 60 * 2592000);
         }
 
         return $suppliers;
@@ -116,23 +109,19 @@ class AbSuppliers {
         $suppliers = $this->getSuppliers($atts);
 
         $this->totalFoundLogos = 0;
-        foreach ($suppliers as $segment => $supplierSegment) {
-            foreach ($supplierSegment as $type => $supplierType) {
-                if( is_array( $supplierType) ){
-                    foreach ($supplierType as $supplier) {
-                        $supplierList[$supplier['supplier_id']]['slug'] = $supplier['slug'];
-                        $supplierList[$supplier['supplier_id']]['name'] = $supplier['name'];
-                        $supplierList[$supplier['supplier_id']]['services'] = $supplier['services'];
-                        $supplierList[$supplier['supplier_id']]['id'] = $supplier['supplier_id'];
-                        $supplierList[$supplier['supplier_id']]['is_partner'] = $supplier['is_partner'];
 
-                        if($atts['image-color-type']=='transparent' && isset($supplier['logo'][$atts['image-size']][$atts['image-color-type']]) ){
-                            $supplierList[$supplier['supplier_id']]['logo'] = $supplier['logo'][$atts['image-size']]['transparent']['color'];
-                        }
-                        else{
-                            $supplierList[$supplier['supplier_id']]['logo'] = $supplier['logo'][$atts['image-size']][$atts['image-color-type']];
-                        }
-                    }
+        if (is_array($suppliers)) {
+            foreach ($suppliers as $supplier) {
+                $supplierList[$supplier['supplier_id']]['slug'] = $supplier['slug'];
+                $supplierList[$supplier['supplier_id']]['name'] = $supplier['name'];
+                $supplierList[$supplier['supplier_id']]['services'] = $supplier['services'];
+                $supplierList[$supplier['supplier_id']]['id'] = $supplier['supplier_id'];
+                $supplierList[$supplier['supplier_id']]['is_partner'] = $supplier['is_partner'];
+
+                if ($atts['image-color-type'] == 'transparent' && isset($supplier['logo'][$atts['image-size']][$atts['image-color-type']])) {
+                    $supplierList[$supplier['supplier_id']]['logo'] = $supplier['logo'][$atts['image-size']]['transparent']['color'];
+                } else {
+                    $supplierList[$supplier['supplier_id']]['logo'] = $supplier['logo'][$atts['image-size']][$atts['image-color-type']];
                 }
             }
         }
@@ -602,7 +591,7 @@ class AbSuppliers {
     /**
      * @return string
      */
-    public function suppliersPartnersForResultFilters()
+    public function suppliersForResultFilters()
     {
         $atts = [
           'sort-by' => 'is_partner'
@@ -648,45 +637,6 @@ class AbSuppliers {
             $html .= '</div>';
             $html .= '<div class="moreFilterWrapper lessNonPartners"><a>'.pll__('- less').'</a></div>';
         }
-
-        return $html;
-    }
-
-    /**
-     * @return string
-     */
-    public function suppliersForResultFilters()
-    {
-        $atts = [];
-        $counter = 0;
-
-        list($atts, $supplierSorted) = $this->preparedSuppliersLogoData($atts);
-
-        $mod = floor($this->totalFoundLogos / 3);
-
-        $html = '<div class="col-md-4">';
-
-        foreach ($supplierSorted as $supplier) {
-
-            // If $counter is divisible by $mod...
-            if ($counter % $mod == 0 && $counter != 0) {
-                // New div row
-                $html .= '</div><div class="col-md-4">';
-            }
-
-            $html .= '<div class="checkbox fancyCheck">
-                        <input type="checkbox" name=' . $supplier['name'] .' value=' . $supplier['id'] . ' class=' . $supplier['name'] . '>
-                        <label for=' . $supplier['name'] . '>
-                            <i class="unchecked"></i>
-                            <i class="checked"></i>
-                            <span>' . $supplier['name'] .' </span>
-                        </label>
-                    </div>';
-
-            $counter++;
-        }
-
-        $html .= '</div>';
 
         return $html;
     }
