@@ -79,9 +79,9 @@ class AbSuppliers {
      */
     function getSuppliers($atts)
     {
-       // delete_transient( 'abCompareSuppliers' );
-        $suppliers = get_transient('abCompareSuppliers');
-        //$suppliers = null;
+        delete_transient( 'abCompareSuppliers' );
+       // $suppliers = get_transient('abCompareSuppliers');
+        $suppliers = null;
 
         if (!$suppliers) {
 
@@ -101,7 +101,7 @@ class AbSuppliers {
 
             }
 
-           set_transient('abCompareSuppliers', $suppliers, 60 * 60 * 2592000);
+          // set_transient('abCompareSuppliers', $suppliers, 60 * 60 * 2592000);
         }
 
         return $suppliers;
