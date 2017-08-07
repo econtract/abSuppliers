@@ -650,13 +650,7 @@ class AbSuppliers {
         $atts = [ ];
         $html = '';
 
-        $atts = $this->prepareShortCodeAttributes($atts);
-
-        $getLogos = $this->getSupplierLogos($atts);
-        $supplierSorted = $this->sortSupplier(
-            $getLogos,
-            $atts
-        );
+        list($atts, $supplierSorted) = $this->preparedSuppliersLogoData($atts);
 
         foreach ($supplierSorted as $supplier) {
 
