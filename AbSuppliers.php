@@ -641,6 +641,31 @@ class AbSuppliers {
         return $html;
     }
 
+
+    /**
+     * @return string
+     */
+    public function supplierAsOptionsForDropDown()
+    {
+        $atts = [ ];
+        $html = '';
+
+        $atts = $this->prepareShortCodeAttributes($atts);
+
+        $getLogos = $this->getSupplierLogos($atts);
+        $supplierSorted = $this->sortSupplier(
+            $getLogos,
+            $atts
+        );
+
+        foreach ($supplierSorted as $supplier) {
+
+            $html .= '<option value="' . $supplier['id'] . '">' . $supplier['name'] . '</option>';
+        }
+
+        return $html;
+    }
+
     public function registerStringsForLocalization ()
     {
         pll_register_string('abSuppliers', 'brands', 'Suppliers', true);
