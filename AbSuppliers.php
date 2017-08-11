@@ -502,7 +502,8 @@ class AbSuppliers {
             'cat' => $this->productTypes,
             'pref_cs' => $supplier,
             'limit' => '1',
-            'html'  => true
+            'html'  => true,
+            'mark-up' => 'div'
         ], $atts, 'anb_supplier_reviews');
     }
 
@@ -522,6 +523,31 @@ class AbSuppliers {
         }
 
         return $reviews;
+    }
+
+    /**
+     * @param array $atts
+     * @return array
+     */
+    public function getAllReviews($atts = [])
+    {
+        if (empty($atts)) {
+            $atts = [
+                'limit' => '',
+                'mark-up' => 'li'
+            ];
+        }
+
+        $atts = $this->prepareReviewShortCodeParams($atts);
+        $reviews = null;
+
+        if (!$reviews) {
+            $reviews = $this->anbApi->getReviews(
+                $atts
+            );
+        }
+
+        return array($reviews, $atts);
     }
 
     /**
@@ -562,6 +588,57 @@ class AbSuppliers {
                             '.$this->fetchReviewRatings($review['ratings']).'
                       </div>';
             }
+        }
+
+        return $html;
+    }
+
+    /**
+     * @param $atts
+     * @return string
+     */
+    public function showAllReviews($atts)
+    {
+       list($reviews, $atts) = $this->getAllReviews($atts);
+
+        $html = ' ';
+
+        if ($reviews) {
+
+            foreach ($reviews as $review){
+
+                $string = $review['texts']['contents'];
+                if (strlen($string) > 350) {
+
+                    // truncate string
+                    $stringCut = substr($review['texts']['contents'], 0, 350);
+
+                    // make sure it ends in a word so assassinate doesn't become ass...
+                    $string = substr($stringCut, 0, strrpos($stringCut, ' ')).'...';
+                }
+
+                $html .= '<' .$atts['mark-up'] . '>';
+                $html .= '<div class="col-md-8 infoPanel">
+                            <h6>'.$review['texts']['title'].'</h6>
+                            <p>'.$string.'</p>
+                            <p class="infoStamp">'.date("Y/m/d, H:i", strtotime($review['date'])).' - '.$review['author'].', '.$review['city'].'</p>
+                            <!--<a href="#"><i class="fa fa-thumbs-o-up"></i>Is this useful?</a>-->
+                        </div>
+                        <div class="col-md-4 ratingPanel">
+                            <div class="row header">
+                                <div class="col-xs-8 ratingTitle">'.pll__('Total Rating').'</div>
+                                <div class="col-xs-4 countTitle">'.number_format((float)$review['score'], 1, '.', '').'</div>
+                            </div>
+                            '.$this->fetchReviewRatings($review['ratings']).'
+                      </div>';
+                $html .= '</' .$atts['mark-up'] . '>';
+            }
+        }
+
+        if ($atts['mark-up'] == 'li') {
+            return '<ul class="list-unstyled">'.
+            $html;
+            '</ul>';
         }
 
         return $html;
