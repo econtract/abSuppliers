@@ -636,7 +636,7 @@ class AbSuppliers {
         }
 
         if ($atts['mark-up'] == 'li') {
-            return '<ul class="list-unstyled">'.
+            return '<ul class="list-unstyled clearfix">'.
             $html;
             '</ul>';
         }
