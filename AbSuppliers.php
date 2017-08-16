@@ -344,9 +344,11 @@ class AbSuppliers {
      *  will load Html file and embed it with theme
      *  will replace content with specifically relates to supplier
      */
-    public function suppliersCallback(  )
+    public function suppliersCallback( $supplier="", $returnResult = false )
     {
-        $supplier = $this->getUriSegment(2);
+    	if(empty($supplier)) {
+		    $supplier = $this->getUriSegment(2);
+	    }
        // $product  = $this->getUriSegment(3);
 
         $lang = $this->getLanguage();
@@ -373,17 +375,22 @@ class AbSuppliers {
             session_start();
         }
 
-        $_SESSION['supplierData'] = $getSupplier;
-        $_SESSION['supplierProducts'] = $getProducts;
-
+        if($returnResult === false) {
+	        $_SESSION['supplierData'] = $getSupplier;
+	        $_SESSION['supplierProducts'] = $getProducts;
+        } else {
+        	return ['supplierData' => $getSupplier, 'supplierProducts' => $getProducts];
+        }
     }
 
     /**
      * @return array
      */
-    public function prepareSupplierProducts() {
+    public function prepareSupplierProducts($productData = null) {
 
-        $supplierProducts = $_SESSION['supplierProducts'];
+    	if(empty($productData)) {
+		    $supplierProducts = $_SESSION['supplierProducts'];
+	    }
 
         $listProducts = [];
         $temp = $packTemp = 0;
@@ -523,31 +530,6 @@ class AbSuppliers {
         }
 
         return $reviews;
-    }
-
-    /**
-     * @param array $atts
-     * @return array
-     */
-    public function getAllReviews($atts = [])
-    {
-        if (empty($atts)) {
-            $atts = [
-                'limit' => '',
-                'mark-up' => 'li'
-            ];
-        }
-
-        $atts = $this->prepareReviewShortCodeParams($atts);
-        $reviews = null;
-
-        if (!$reviews) {
-            $reviews = $this->anbApi->getReviews(
-                $atts
-            );
-        }
-
-        return array($reviews, $atts);
     }
 
     /**
