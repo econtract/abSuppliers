@@ -27,6 +27,6 @@ add_shortcode( 'anb_suppliers_overview', array( $supplier, 'prepareSuppliersForO
 add_shortcode( 'anb_supplier_partners', array( $supplier, 'displaySupplierPartners' ) );
 
 add_shortcode( 'anb_supplier_reviews', array( $supplier, 'showReviews' ) );
-//add_shortcode( 'anb_supplier_all_reviews', array( $supplier, 'showAllReviews' ) );
+add_shortcode( 'anb_supplier_all_reviews', array( $supplier, 'showAllReviews' ) );
 
 
