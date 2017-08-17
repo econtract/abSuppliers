@@ -531,10 +531,10 @@ class AbSuppliers {
             foreach ($reviews as $review){
 
                 $string = $review['texts']['contents'];
-                if (strlen($string) > 350) {
+                if (strlen($string) > 300) {
 
                     // truncate string
-                    $stringCut = substr($review['texts']['contents'], 0, 350);
+                    $stringCut = substr($review['texts']['contents'], 0, 300);
 
                     // make sure it ends in a word so assassinate doesn't become ass...
                     $string = substr($stringCut, 0, strrpos($stringCut, ' ')).'...';
@@ -560,6 +560,31 @@ class AbSuppliers {
     }
 
     /**
+     * @param array $atts
+     * @return array
+     */
+    public function getAllReviews($atts = [])
+    {
+        if (empty($atts)) {
+            $atts = [
+                'limit' => '',
+                'mark-up' => 'li'
+            ];
+        }
+
+        $atts = $this->prepareReviewShortCodeParams($atts);
+        $reviews = null;
+
+        if (!$reviews) {
+            $reviews = $this->anbApi->getReviews(
+                $atts
+            );
+        }
+
+        return array($reviews, $atts);
+    }
+
+    /**
      * @param $atts
      * @return string
      */
@@ -574,10 +599,10 @@ class AbSuppliers {
             foreach ($reviews as $review){
 
                 $string = $review['texts']['contents'];
-                if (strlen($string) > 350) {
+                if (strlen($string) > 300) {
 
                     // truncate string
-                    $stringCut = substr($review['texts']['contents'], 0, 350);
+                    $stringCut = substr($review['texts']['contents'], 0, 300);
 
                     // make sure it ends in a word so assassinate doesn't become ass...
                     $string = substr($stringCut, 0, strrpos($stringCut, ' ')).'...';
