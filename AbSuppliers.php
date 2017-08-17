@@ -323,22 +323,6 @@ class AbSuppliers {
        return $supplierLogos;
     }
 
-    public function generateRoutes( WP_Router $router )
-    {
-        $router->add_route('aanbieders-suppliers-router', array(
-            'path' => '^'. pll__('brands').'/(.*?)$',
-            'query_vars' => [],
-            'page_callback' => array($this, 'suppliersCallback'),
-            'page_arguments' =>  [],
-            'access_callback' => TRUE,
-            'title' => __( '' ),
-            'template' => array(
-                'page-provider-details.php',
-                get_template_directory() . 'page-provider-details.php'
-            )
-        ));
-    }
-
     /**
      *  call back will fetch data from API
      *  will load Html file and embed it with theme
