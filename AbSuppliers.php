@@ -4,7 +4,7 @@ namespace abSuppliers;
 
 use AnbApiClient\Aanbieders;
 use Locale;
-use WP_Router;
+
 
 
 /**
@@ -194,7 +194,6 @@ class AbSuppliers {
         return $response;
     }
 
-
     /**
      * @param $atts
      * @return string
@@ -324,16 +323,19 @@ class AbSuppliers {
     }
 
     /**
-     *  call back will fetch data from API
-     *  will load Html file and embed it with theme
-     *  will replace content with specifically relates to supplier
+     * call back will fetch data from API
+     * will load Html file and embed it with theme
+     * will replace content with specifically relates to supplier
+     *
+     * @param string $supplier
+     * @param bool $returnResult
+     * @return array
      */
     public function suppliersCallback( $supplier="", $returnResult = false )
     {
     	if(empty($supplier)) {
 		    $supplier = $this->getUriSegment(2);
 	    }
-       // $product  = $this->getUriSegment(3);
 
         $lang = $this->getLanguage();
 
@@ -368,6 +370,7 @@ class AbSuppliers {
     }
 
     /**
+     * @param null $productData
      * @return array
      */
     public function prepareSupplierProducts($productData = null) {
@@ -654,7 +657,6 @@ class AbSuppliers {
 
         return $html;
     }
-
 
     /**
      * @return string

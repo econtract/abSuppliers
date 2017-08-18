@@ -10,7 +10,6 @@ use WP_Router;
  */
 trait Helper {
 
-
     /**
      * @return array
      */
@@ -52,8 +51,6 @@ trait Helper {
 
 	public function generateRoutes( WP_Router $router )
 	{
-		//$router->add_rewrite_rules(['^brands/(.+)/(.+)/?', 'index.php?pagename=brands/brand/product&sid=$matches[1]&productid=$matches[2]', 'top']);
-		//add_rewrite_rule('^testing1/test1/?', 'index.php?pagename=merken', 'top');
 		$router->add_route('anb_route_product', array(
 			'path' => '^'. pll__('brands').'/(.+?)/(.+?)/?$',
 			'query_vars' => ['sid' => $this->getUriSegment(2), 'productid' => $this->getUriSegment(3)],
@@ -79,18 +76,15 @@ trait Helper {
 				get_template_directory() . 'page-provider-details.php'
 			)
 		));
-
-		/*$router->add_rewrite_rules([
-			'^'.pll__('brands').'/(.+)/?' => 'index.php?pagename='.pll__('brands').'/'.pll__('brand').'&sid=$matches[1]',
-			'^'.pll__('brands').'/(.+)/(.+)/?' => 'index.php?pagename='.pll__('brands').'/'.pll__('brand').'/'.pll__('product').'&sid=$matches[1]&productid=$matches[2]'
-		]);*/
-		//add_rewrite_rule('^'.pll__('brands').'/(.+)/?', 'index.php?pagename='.pll__('brands').'/'.pll__('brand').'&sid=$matches[1]', 'top');
-		//add_rewrite_rule('^'.pll__('brands').'/(.+)/(.+)/?', 'index.php?pagename='.pll__('brands').'/'.pll__('brand').'/'.pll__('product').'&sid=$matches[1]&productid=$matches[2]', 'top');
-
 	}
 
-	public function emptyCallback() {
-    	return '';
+    /**
+     * an empty call back
+     * @return string
+     */
+    public function emptyCallback()
+    {
+        return '';
 	}
 
 }
