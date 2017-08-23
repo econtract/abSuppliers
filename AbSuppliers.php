@@ -186,6 +186,8 @@ class AbSuppliers {
             $counter++;
         }
 
+        $response .= '</div>';
+
         if ($atts['mark-up'] == 'li') {
             return '<ul>'.
             $response;
