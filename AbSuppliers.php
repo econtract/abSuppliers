@@ -372,6 +372,20 @@ class AbSuppliers {
     }
 
     /**
+     * @param $product
+     * @return string
+     */
+    protected function determineProductPackType ($product)
+    {
+        $countProducts = count($product['packtypes']);
+        $productNames = array_keys($product['packtypes']);
+
+        if ($countProducts) {
+            return implode(" + ", $productNames);
+        }
+    }
+
+    /**
      * @param null $productData
      * @return array
      */
@@ -385,6 +399,12 @@ class AbSuppliers {
         $temp = $packTemp = 0;
 
         foreach ($supplierProducts as $product) {
+
+            if ($product['producttype'] == 'packs' && array_key_exists('packtype', $product) ) {
+                // Overwrite product type for accuracy to data set on the behalf of provided group of services
+                $product['packtype'] =  $this->determineProductPackType($product);
+
+            }
 
             if (!isset($listProducts[$product['producttype']])) {
                 $listProducts[$product['producttype']] = [];
