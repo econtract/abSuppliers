@@ -734,10 +734,12 @@ class AbSuppliers {
     }
 
 
-    /**
-     * @return string
-     */
-    public function supplierAsOptionsForDropDown()
+	/**
+	 * @param int $selectedId
+	 *
+	 * @return string
+	 */
+    public function supplierAsOptionsForDropDown($selectedId = null)
     {
         $atts = [ ];
         $html = '';
@@ -745,8 +747,12 @@ class AbSuppliers {
         list($atts, $supplierSorted) = $this->preparedSuppliersLogoData($atts);
 
         foreach ($supplierSorted as $supplier) {
+        	$selected = '';
+        	if(!empty($selectedId) && $selectedId == $supplier['id']) {
+        		$selected = 'selected';
+	        }
 
-            $html .= '<option value="' . $supplier['id'] . '">' . $supplier['name'] . '</option>';
+            $html .= '<option ' . $selected . ' value="' . $supplier['id'] . '">' . $supplier['name'] . '</option>';
         }
 
         return $html;
