@@ -752,6 +752,27 @@ class AbSuppliers {
         return $html;
     }
 
+    /**
+     * @param $id
+     * @return string
+     */
+    public function getSupplierNameById($id)
+    {
+        $atts = [ ];
+        $name = '';
+
+        list($atts, $supplierSorted) = $this->preparedSuppliersLogoData($atts);
+
+        foreach ($supplierSorted as $supplier) {
+
+            if ($id == $supplier['id']) {
+                $name = $supplier['name'];
+            }
+        }
+
+        return $name;
+    }
+
     public function registerStringsForLocalization ()
     {
         pll_register_string('abSuppliers', 'brands', 'Suppliers', true);
