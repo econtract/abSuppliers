@@ -736,12 +736,12 @@ class AbSuppliers {
 
 	/**
 	 * @param int $selectedId
+	 * @param array $atts
 	 *
 	 * @return string
 	 */
-    public function supplierAsOptionsForDropDown($selectedId = null)
+    public function supplierAsOptionsForDropDown($selectedId = null, $atts = [])
     {
-        $atts = [ ];
         $html = '';
 
         list($atts, $supplierSorted) = $this->preparedSuppliersLogoData($atts);
