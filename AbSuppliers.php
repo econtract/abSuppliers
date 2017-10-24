@@ -463,7 +463,7 @@ class AbSuppliers {
                 if ($otherOffers > 0) {
 
                     //check if this value of array is lesser than $temp
-                    if ((int)$product['monthly_fee']['value'] < (int)$temp) { var_dump($product['monthly_fee']['value'] ,$temp,"bari honda"); die;
+                    if ((int)$product['monthly_fee']['value'] < (int)$temp) {
                         $listProducts[$product['producttype']][$product['segment']]['fee'] = $product['monthly_fee']['value'];
                         $listProducts[$product['producttype']][$product['segment']]['unit'] = $product['monthly_fee']['unit'];
 
@@ -768,6 +768,36 @@ class AbSuppliers {
 	        }
 
             $html .= '<option ' . $selected . ' value="' . $supplier['id'] . '">' . $supplier['name'] . '</option>';
+        }
+
+        return $html;
+    }
+
+    /**
+     * @param array $atts
+     * @return string
+     */
+    public function suppliersForWizard($atts = [])
+    {
+        $html = '';
+
+        list($atts, $supplierSorted) = $this->preparedSuppliersLogoData($atts);
+
+        foreach ($supplierSorted as $supplier) {
+
+            $html .= "<li>
+                        <input type='checkbox' name='pref_cs[]' id='{$supplier['name']}' value='{$supplier['id']}'>
+                        <label for='{$supplier['name']}'>
+                            <img src='{$supplier['logo']}' alt='{$supplier['name']}' class='logo'>
+                            <span class='providerName'>{$supplier['name']}</span>
+                            <!--<span class='offer'>Offers starting from 30€</span>-->
+                            <i class='fa fa-check'></i>
+                        </label>
+                    </li>";
+        }
+
+        if ($html) {
+            $html = "<ul class='list-unstyled logoCheckBoxComp col-4'>" . $html . "</ul>";
         }
 
         return $html;
