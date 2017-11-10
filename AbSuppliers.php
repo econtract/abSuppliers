@@ -391,6 +391,8 @@ class AbSuppliers {
      */
     public function prepareSupplierProducts($productData = null) {
 
+        $supplierProducts = $productData;
+
     	if(empty($productData)) {
 		    $supplierProducts = $_SESSION['supplierProducts'];
 	    }
@@ -481,7 +483,6 @@ class AbSuppliers {
             }
 
         }
-
         return $listProducts;
     }
 
@@ -781,12 +782,14 @@ class AbSuppliers {
     {
         $html = '';
 
+        $atts['partners_only'] = true;
+
         list($atts, $supplierSorted) = $this->preparedSuppliersLogoData($atts);
 
         foreach ($supplierSorted as $supplier) {
 
             $html .= "<li>
-                        <input type='checkbox' name='pref_cs[]' id='{$supplier['name']}' value='{$supplier['id']}'>
+                        <input type='checkbox' checked name='pref_cs[]' id='{$supplier['name']}' value='{$supplier['id']}'>
                         <label for='{$supplier['name']}'>
                             <img src='{$supplier['logo']}' alt='{$supplier['name']}' class='logo'>
                             <span class='providerName'>{$supplier['name']}</span>
@@ -797,7 +800,7 @@ class AbSuppliers {
         }
 
         if ($html) {
-            $html = "<ul class='list-unstyled logoCheckBoxComp col-4'>" . $html . "</ul>";
+            $html = "<ul class='list-unstyled logoCheckBoxComp col-4 wizardSupplierOptions'>" . $html . "</ul>";
         }
 
         return $html;
