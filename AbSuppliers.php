@@ -391,6 +391,8 @@ class AbSuppliers {
      */
     public function prepareSupplierProducts($productData = null) {
 
+        $supplierProducts = $productData;
+
     	if(empty($productData)) {
 		    $supplierProducts = $_SESSION['supplierProducts'];
 	    }
@@ -412,10 +414,11 @@ class AbSuppliers {
                 $i = 0;
             }
 
+
             if ($product['producttype'] == 'packs' &&
-                !isset($listProducts[$product['producttype']][$product['packtype']])) {
-                $listProducts[$product['producttype']][$product['packtype']] = [];
-                $listProducts[$product['producttype']][$product['packtype']]['count'] = 0;
+                !isset($listProducts[$product['producttype']][$product['segment']][$product['packtype']])) {
+                $listProducts[$product['producttype']][$product['segment']][$product['packtype']] = [];
+                $listProducts[$product['producttype']][$product['segment']][$product['packtype']]['count'] = 0;
                 $subPack = 0;
             }
 
@@ -423,21 +426,21 @@ class AbSuppliers {
 
                 //check if this is first loop then assign first value as $min
                 if ($subPack == 0) {
-                    $listProducts[$product['producttype']][$product['packtype']]['fee'] = $packTemp = $product['monthly_fee']['value'];
-                    $listProducts[$product['producttype']][$product['packtype']]['unit'] = $product['monthly_fee']['unit'];
+                    $listProducts[$product['producttype']][$product['segment']][$product['packtype']]['fee'] = $packTemp = $product['monthly_fee']['value'];
+                    $listProducts[$product['producttype']][$product['segment']][$product['packtype']]['unit'] = $product['monthly_fee']['unit'];
                 }
                 //if this is not first loop then go in this if
-                if ($subPack > 0) {
+                if ((int)$subPack > 0) {
                     //check if this value of array is lesser than $packTemp
-                    if ($product['monthly_fee']['value'] < $packTemp) {
-                        $listProducts[$product['producttype']][$product['packtype']]['fee'] = $product['monthly_fee']['value'];
-                        $listProducts[$product['producttype']][$product['packtype']]['unit'] = $product['monthly_fee']['unit'];
+                    if ((int)$product['monthly_fee']['value'] < (int)$packTemp) {
+                        $listProducts[$product['producttype']][$product['segment']][$product['packtype']]['fee'] = $product['monthly_fee']['value'];
+                        $listProducts[$product['producttype']][$product['segment']][$product['packtype']]['unit'] = $product['monthly_fee']['unit'];
 
                     }
                 }
 
-                if (isset($listProducts[$product['producttype']][$product['packtype']]['count'])) {
-                    $listProducts[$product['producttype']][$product['packtype']]['count']++;
+                if (isset($listProducts[$product['producttype']][$product['segment']][$product['packtype']]['count'])) {
+                    $listProducts[$product['producttype']][$product['segment']][$product['packtype']]['count']++;
                     $subPack++;
                 }
 
@@ -446,27 +449,40 @@ class AbSuppliers {
             // Don't check fee for the top level packs
             if ($product['producttype'] != 'packs' ) {
 
-                //check if this is first loop then assign first value as $min
-                if ($i == 0) {
-                    $listProducts[$product['producttype']]['fee'] = $temp = $product['monthly_fee']['value'];
-                    $listProducts[$product['producttype']]['unit'] = $product['monthly_fee']['unit'];
+                if (!isset($listProducts[$product['producttype']][$product['segment']])) {
+                    $listProducts[$product['producttype']][$product['segment']] = [];
+                    $listProducts[$product['producttype']][$product['segment']]['count'] = 0;
+                    $otherOffers = 0;
                 }
+
+                //check if this is first loop then assign first value as $min
+                if ($otherOffers == 0) {
+                    $listProducts[$product['producttype']][$product['segment']]['fee'] = $temp = $product['monthly_fee']['value'];
+                    $listProducts[$product['producttype']][$product['segment']]['unit'] = $product['monthly_fee']['unit'];
+                }
+
                 //if this is not first loop then go in this if
-                if ($i > 0) {
+                if ($otherOffers > 0) {
+
                     //check if this value of array is lesser than $temp
-                    if ($product['monthly_fee']['value'] < $temp) {
-                        $listProducts[$product['producttype']]['fee'] = $product['monthly_fee']['value'];
-                        $listProducts[$product['producttype']]['unit'] = $product['monthly_fee']['unit'];
+                    if ((int)$product['monthly_fee']['value'] < (int)$temp) {
+                        $listProducts[$product['producttype']][$product['segment']]['fee'] = $product['monthly_fee']['value'];
+                        $listProducts[$product['producttype']][$product['segment']]['unit'] = $product['monthly_fee']['unit'];
 
                     }
+                }
+
+                if (isset($listProducts[$product['producttype']][$product['segment']]['count'])) {
+                    $listProducts[$product['producttype']][$product['segment']]['count']++;
+                    $otherOffers++;
                 }
             }
             if (isset($listProducts[$product['producttype']]['count'])) {
                 $listProducts[$product['producttype']]['count']++;
                 $i++;
             }
-        }
 
+        }
         return $listProducts;
     }
 
@@ -753,6 +769,38 @@ class AbSuppliers {
 	        }
 
             $html .= '<option ' . $selected . ' value="' . $supplier['id'] . '">' . $supplier['name'] . '</option>';
+        }
+
+        return $html;
+    }
+
+    /**
+     * @param array $atts
+     * @return string
+     */
+    public function suppliersForWizard($atts = [])
+    {
+        $html = '';
+
+        $atts['partners_only'] = true;
+
+        list($atts, $supplierSorted) = $this->preparedSuppliersLogoData($atts);
+
+        foreach ($supplierSorted as $supplier) {
+
+            $html .= "<li>
+                        <input type='checkbox' checked name='pref_cs[]' id='{$supplier['name']}' value='{$supplier['id']}'>
+                        <label for='{$supplier['name']}'>
+                            <img src='{$supplier['logo']}' alt='{$supplier['name']}' class='logo'>
+                            <span class='providerName'>{$supplier['name']}</span>
+                            <!--<span class='offer'>Offers starting from 30€</span>-->
+                            <i class='fa fa-check'></i>
+                        </label>
+                    </li>";
+        }
+
+        if ($html) {
+            $html = "<ul class='list-unstyled logoCheckBoxComp col-4 wizardSupplierOptions'>" . $html . "</ul>";
         }
 
         return $html;
