@@ -807,6 +807,29 @@ class AbSuppliers {
     }
 
     /**
+     * @param $isPartner
+     * @return mixed
+     */
+    public function getSupplierIds($isPartner)
+    {
+        $ids = [];
+
+        if ($isPartner) {
+            $atts['partners_only'] = true;
+        }
+
+
+        list($atts, $supplierSorted) = $this->preparedSuppliersLogoData($atts);
+
+
+        foreach ($supplierSorted as $supplier) {
+          $ids[] = $supplier['id'];
+        }
+
+        return $ids;
+    }
+
+    /**
      * @param $id
      * @return string
      */
