@@ -56,6 +56,7 @@ trait Helper {
 			'query_vars' => ['sid' => $this->getUriSegment(2), 'productid' => $this->getUriSegment(3)],
 			'page_callback' => [$this, 'emptyCallback'],
 			'page_arguments' =>  [],
+			'title_callback' => [$this, 'productTitleCallback'],
 			'access_callback' => true,
 			'title' => __( '' ),
 			'template' => array(
@@ -85,6 +86,31 @@ trait Helper {
     public function emptyCallback()
     {
         return '';
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function productTitleCallback() {
+    	global $wp_query;
+
+		/** @var \AnbTopDeals\AnbProduct $anbPrd */
+		$anbPrd = wpal_create_instance( \AnbTopDeals\AnbProduct::class );
+
+		/** @var \AnbSearch\AnbCompare $anbComp */
+		$anbComp = wpal_create_instance( \AnbSearch\AnbCompare::class );
+
+		$result      = $anbPrd->getProducts(
+			[
+				'sid'         => $wp_query->query_vars['sid'],
+				'detaillevel' => [
+					'links'
+				],
+				'lang'        => $anbComp->getCurrentLang()
+			],
+			$wp_query->query_vars['productid'] );
+		$product     = json_decode( $result )[0];
+		return $product->product_name;
 	}
 
 }
