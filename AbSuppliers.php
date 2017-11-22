@@ -59,6 +59,11 @@ class AbSuppliers {
     public $totalFoundLogos = 0;
 
     /**
+     * @var string
+     */
+    public $currencyUnit = 'EUR';
+
+    /**
      * abSuppliers constructor.
      */
     public function __construct()
@@ -781,26 +786,34 @@ class AbSuppliers {
     public function suppliersForWizard($atts = [])
     {
         $html = '';
+        $segment = isset($_GET['sg']) ? $_GET['sg'] : 'consumer';
 
         $atts['partners_only'] = true;
 
         list($atts, $supplierSorted) = $this->preparedSuppliersLogoData($atts);
 
         foreach ($supplierSorted as $supplier) {
+            $resultMin = null;
 
+            $resultMin = $this->getMinimumPriceForSupplier($supplier, $segment, $resultMin);
+
+            $minimumPriceString = '';
+            if ($resultMin) {
+                $minimumPriceString =  "<span class='offer'>".pll__( 'offers' )." " . pll__('starting from')." " ." {$resultMin} ". getCurrencySymbol($this->currencyUnit) ."</span>";
+            }
             $html .= "<li>
                         <input type='checkbox' checked name='pref_cs[]' id='{$supplier['name']}' value='{$supplier['id']}'>
                         <label for='{$supplier['name']}'>
                             <img src='{$supplier['logo']}' alt='{$supplier['name']}' class='logo'>
                             <span class='providerName'>{$supplier['name']}</span>
-                            <!--<span class='offer'>Offers starting from 30€</span>-->
+                            {$minimumPriceString}
                             <i class='fa fa-check'></i>
                         </label>
                     </li>";
         }
 
         if ($html) {
-            $html = "<ul class='list-unstyled logoCheckBoxComp col-4 wizardSupplierOptions'>" . $html . "</ul>";
+            $html = "<ul class='list-unstyled logoCheckBoxComp col-4 wizardSupplierOptions clearfix'>" . $html . "</ul>";
         }
 
         return $html;
@@ -853,6 +866,42 @@ class AbSuppliers {
     public function registerStringsForLocalization ()
     {
         pll_register_string('abSuppliers', 'brands', 'Suppliers', true);
+    }
+
+    /**
+     * @param $supplier
+     * @param $segment
+     * @param $resultMin
+     * @return mixed
+     */
+    private function getMinimumPriceForSupplier($supplier, $segment, $resultMin)
+    {
+        $getProducts = $this->anbApi->getProducts(
+            [
+                'sid' => $supplier['id'], //'102',//
+                'lang' => $this->getLanguage(),
+                'cat' => $this->productTypes,
+                'detaillevel' => ['reviews']
+            ]
+        );
+
+        $supplierProducts = $this->prepareSupplierProducts($getProducts);
+
+        if ($supplierProducts && array_key_exists('packs', $supplierProducts) && isset($supplierProducts['packs'][$segment])) {
+            foreach ($supplierProducts['packs'][$segment] as $key => $value) {
+                if (array_key_exists('fee', $value)) {
+                    $resultMin[$key] = (float)$value['fee'];
+                }
+            }
+
+            $resultMin = min($resultMin);
+            return $resultMin;
+        } elseif (isset($supplierProducts['internet'][$segment])) {
+
+            $resultMin = $supplierProducts['internet'][$segment]['fee'];
+            return $resultMin;
+        }
+        return $resultMin;
     }
 
     //echo do_shortcode('[anb_suppliers mark-up="div" mark-up-class="col-sm-2 serviceProvider" lang="nl" segments="sme" products="internet" mod="6"]'); />
