@@ -780,10 +780,11 @@ class AbSuppliers {
     }
 
     /**
+     * @param null $minimumPrices
      * @param array $atts
      * @return string
      */
-    public function suppliersForWizard($atts = [])
+    public function suppliersForWizard($minimumPrices = null ,$atts = [])
     {
         $html = '';
         $segment = isset($_GET['sg']) ? $_GET['sg'] : 'consumer';
@@ -793,15 +794,12 @@ class AbSuppliers {
         list($atts, $supplierSorted) = $this->preparedSuppliersLogoData($atts);
 
         foreach ($supplierSorted as $supplier) {
-            $resultMin = null;
 
-            $resultMin = $this->getMinimumPriceForSupplier($supplier, $segment, $resultMin);
-
-            $minimumPriceString = '';
-            if ($resultMin) {
-                $minimumPriceString =  "<span class='offer'>".pll__( 'offers' )." " . pll__('starting from')." " ." {$resultMin} ". getCurrencySymbol($this->currencyUnit) ."</span>";
+            $minimumPriceString =  "<span class='offer supplier-offer-{$supplier['id']}'>".pll__( 'no offers found' )."</span>";
+            if ($minimumPrices && array_key_exists($supplier['id'], $minimumPrices)) {
+                $minimumPriceString =  "<span class='offer supplier-offer-{$supplier['id']}'>".pll__( 'offers' )." " . pll__('starting from')." " ." {$minimumPrices[$supplier['id']]['price']} ". getCurrencySymbol($minimumPrices[$supplier['id']]['unit']) ."</span>";
             }
-            $html .= "<li>
+            $html .= "<li  id='li-supplier-box-{$supplier['id']}'>
                         <input type='checkbox' checked name='pref_cs[]' id='{$supplier['name']}' value='{$supplier['id']}'>
                         <label for='{$supplier['name']}'>
                             <img src='{$supplier['logo']}' alt='{$supplier['name']}' class='logo'>
