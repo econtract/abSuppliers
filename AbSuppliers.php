@@ -82,24 +82,39 @@ class AbSuppliers {
      * @param $atts
      * @return null
      */
-    function getSuppliers($atts)
+    function getSuppliers($atts, $enableCache = true, $cacheDurationSeconds = 14400)
     {
-        delete_transient('abCompareSuppliers');
-        // $suppliers = get_transient('abCompareSuppliers');
+        if(defined('SUPPLIER_API_CACHE_DURATION')) {
+            $cacheDurationSeconds = SUPPLIER_API_CACHE_DURATION;
+        }
+
         $suppliers = null;
 
-        if (!$suppliers) {
+        //generate key from params to store in cache
+        if ($enableCache) {
+            $cacheKey = md5(implode(",", $atts)) . ":getSuppliers";
+            $suppliers = get_transient($cacheKey);
+
+            if($suppliers === false || empty($suppliers)) {
+                $suppliers = $this->anbApi->getSuppliers(
+                    [
+                        'cat'           => $atts['products'],
+                        'lang'          => $atts['lang'],
+                        'detaillevel'   => $atts['detaillevel'],
+                        'partners_only' => $atts['partners_only']
+                    ]
+                );
+                set_transient($cacheKey, $suppliers, $cacheDurationSeconds);
+            }
+        } else {
             $suppliers = $this->anbApi->getSuppliers(
                 [
                     'cat'           => $atts['products'],
                     'lang'          => $atts['lang'],
                     'detaillevel'   => $atts['detaillevel'],
-                    'partners_only' => $atts['partners_only'],
-                    //'sg'          => trim($segment)
+                    'partners_only' => $atts['partners_only']
                 ]
             );
-
-            // set_transient('abCompareSuppliers', $suppliers, 60 * 60 * 2592000);
         }
 
         return $suppliers;
@@ -548,10 +563,31 @@ class AbSuppliers {
      * @param $atts
      * @return null
      */
-    public function getReviews($atts = [])
+    public function getReviews($atts = [], $enableCache = true, $cacheDurationSeconds = 14400)
     {
+        if(defined('REVIEW_API_CACHE_DURATION')) {
+            $cacheDurationSeconds = REVIEW_API_CACHE_DURATION;
+        }
+
         $atts = $this->prepareReviewShortCodeParams($atts);
         $reviews = null;
+
+        //generate key from params to store in cache
+        if ($enableCache) {
+            $cacheKey = md5(implode(",", $atts)) . ":getReviews";
+            $reviews = get_transient($cacheKey);
+
+            if($suppliers === false || empty($reviews)) {
+                $reviews = $this->anbApi->getReviews(
+                    $atts
+                );
+                set_transient($cacheKey, $reviews, $cacheDurationSeconds);
+            }
+        } else {
+            $reviews = $this->anbApi->getReviews(
+                $atts
+            );
+        }
 
         if (!$reviews) {
             $reviews = $this->anbApi->getReviews(
