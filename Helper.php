@@ -91,7 +91,8 @@ trait Helper {
 	/**
 	 * @return mixed
 	 */
-	public function productTitleCallback() {
+	public function productTitleCallback()
+    {
     	global $wp_query;
 
 		/** @var \AnbTopDeals\AnbProduct $anbPrd */
@@ -112,5 +113,14 @@ trait Helper {
 		$product     = json_decode( $result )[0];
 		return $product->product_name;
 	}
+
+    /**
+     * @param $price
+     * @return mixed
+     */
+    public function priceDotToCommaConversion ($price)
+    {
+        return str_replace( '.', ',', $price);
+    }
 
 }

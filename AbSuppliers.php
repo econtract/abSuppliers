@@ -795,10 +795,12 @@ class AbSuppliers {
 
         foreach ($supplierSorted as $supplier) {
 
-            $minimumPriceString =  "<span class='offer supplier-offer-{$supplier['id']}'>".pll__( 'no offers found' )."</span>";
+            $minimumPriceString =  "<span class='offer supplier-offer-{$supplier['id']}'>".pll__( 'No offers in your area' )."</span>";
             if ($minimumPrices && array_key_exists($supplier['id'], $minimumPrices)) {
-                $minimumPriceString =  "<span class='offer supplier-offer-{$supplier['id']}'>".pll__( 'offers' )." " . pll__('starting from')." " ." {$minimumPrices[$supplier['id']]['price']} ". getCurrencySymbol($minimumPrices[$supplier['id']]['unit']) ."</span>";
+                $convertedPrice = $this->priceDotToCommaConversion($minimumPrices[$supplier['id']]['price']);
+                $minimumPriceString =  "<span class='offer supplier-offer-{$supplier['id']}'>".pll__( 'offers' )." " . pll__('starting from')." " . getCurrencySymbol($minimumPrices[$supplier['id']]['unit'])."  {$convertedPrice} " ."</span>";
             }
+
             $html .= "<li  id='li-supplier-box-{$supplier['id']}'>
                         <input type='checkbox' checked name='pref_cs[]' id='{$supplier['name']}' value='{$supplier['id']}'>
                         <label for='{$supplier['name']}'>
