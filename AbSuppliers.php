@@ -91,7 +91,9 @@ class AbSuppliers {
         $suppliers = null;
 
         //generate key from params to store in cache
-        if ($enableCache) {
+        $displayText = "API Call (getSuppliers) inside getSuppliers";
+        $start = getStartTime();
+        if ($enableCache && !isset($_GET['no_cache'])) {
             $cacheKey = md5(implode(",", $atts)) . ":getSuppliers";
             $suppliers = get_transient($cacheKey);
 
@@ -105,6 +107,8 @@ class AbSuppliers {
                     ]
                 );
                 set_transient($cacheKey, $suppliers, $cacheDurationSeconds);
+            } else {
+                $displayText = "API Call Cached (getSuppliers) inside getSuppliers";
             }
         } else {
             $suppliers = $this->anbApi->getSuppliers(
@@ -116,6 +120,9 @@ class AbSuppliers {
                 ]
             );
         }
+
+        $finish = getEndTime();
+        displayCallTime($start, $finish, $displayText);
 
         return $suppliers;
     }
@@ -573,7 +580,10 @@ class AbSuppliers {
         $reviews = null;
 
         //generate key from params to store in cache
-        if ($enableCache) {
+        displayParams($atts);
+        $start = getStartTime();
+        $displayText = "Time API (Reviews) inside getReviews";
+        if ($enableCache && !isset($_GET['no_cache'])) {
             $cacheKey = md5(implode(",", $atts)) . ":getReviews";
             $reviews = get_transient($cacheKey);
 
@@ -582,6 +592,8 @@ class AbSuppliers {
                     $atts
                 );
                 set_transient($cacheKey, $reviews, $cacheDurationSeconds);
+            } else {
+                $displayText = "Time API Cached (Reviews) inside getReviews";
             }
         } else {
             $reviews = $this->anbApi->getReviews(
@@ -594,7 +606,8 @@ class AbSuppliers {
                 $atts
             );
         }
-
+        $finish = getEndTime();
+        displayCallTime($start, $finish, $displayText);
         return $reviews;
     }
 
@@ -658,7 +671,7 @@ class AbSuppliers {
         $reviews = null;
 
         if (!$reviews) {
-            $reviews = $this->anbApi->getReviews(
+            $reviews = $this->getReviews(
                 $atts
             );
         }

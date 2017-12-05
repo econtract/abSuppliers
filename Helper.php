@@ -53,10 +53,11 @@ trait Helper {
 	{
 		$router->add_route('anb_route_product', array(
 			'path' => '^'. pll__('brands').'/(.+?)/(.+?)/?$',
-			'query_vars' => ['sid' => $this->getUriSegment(2), 'productid' => $this->getUriSegment(3)],
+			'query_vars' => ['sid' => $this->getUriSegment(2), 'productid' => $this->getUriSegment(3), 'startScriptTime' => getStartTime()],
 			'page_callback' => [$this, 'emptyCallback'],
 			'page_arguments' =>  [],
 			'title_callback' => [$this, 'productTitleCallback'],
+			'title_arguments' => ['test1' => 'testing1'],
 			'access_callback' => true,
 			'title' => __( '' ),
 			'template' => array(
@@ -67,7 +68,7 @@ trait Helper {
 
 		$router->add_route('anb_route_brand', array(
 			'path' => '^'. pll__('brands').'/(.*?)$',
-			'query_vars' => [],
+			'query_vars' => ['startScriptTime' => getStartTime()],
 			'page_callback' => array($this, 'suppliersCallback'),
 			'page_arguments' =>  [],
 			'access_callback' => TRUE,
@@ -91,7 +92,7 @@ trait Helper {
 	/**
 	 * @return mixed
 	 */
-	public function productTitleCallback()
+	public function productTitleCallback($params=[])
     {
     	global $wp_query;
 
