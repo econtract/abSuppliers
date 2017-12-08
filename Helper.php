@@ -57,7 +57,7 @@ trait Helper {
 			'page_callback' => [$this, 'emptyCallback'],
 			'page_arguments' =>  [],
 			'title_callback' => [$this, 'productTitleCallback'],
-			'title_arguments' => ['test1' => 'testing1'],
+			'title_arguments' => [$this->getUriSegment(2), $this->getUriSegment(3)],
 			'access_callback' => true,
 			'title' => __( '' ),
 			'template' => array(
@@ -92,10 +92,8 @@ trait Helper {
 	/**
 	 * @return mixed
 	 */
-	public function productTitleCallback($params=[])
+	public function productTitleCallback($sid, $productid)
     {
-    	global $wp_query;
-
 		/** @var \AnbTopDeals\AnbProduct $anbPrd */
 		$anbPrd = wpal_create_instance( \AnbTopDeals\AnbProduct::class );
 
@@ -104,13 +102,13 @@ trait Helper {
 
 		$result      = $anbPrd->getProducts(
 			[
-				'sid'         => $wp_query->query_vars['sid'],
+				'sid'         => $sid,
 				'detaillevel' => [
-					'links'
+					'just_get_core_info'
 				],
 				'lang'        => $anbComp->getCurrentLang()
 			],
-			$wp_query->query_vars['productid'] );
+            $productid );
 		$product     = json_decode( $result )[0];
 		return $product->product_name;
 	}
