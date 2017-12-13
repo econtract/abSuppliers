@@ -191,9 +191,16 @@ class AbSuppliers {
             $mod6 = $totalLogos % 6;
             $mod5 = $totalLogos % 5;
 
+            /*
+             * $breakPint defines the number of rows the logos will appear
+             * if records are more than 12 then the logos will be have 5 or 6 column
+             * if modulus of 6 and 5 are equal than number of columns in each row is 6
+             * if modulus of 6 and 5 not equal to zero then $breakPoint will be the one that return high modulus value*/
             $breakPoint = (($mod6 === $mod5) || ($mod6 ===0) || ($mod6 > $mod5 && $mod5 != 0))?6:5;
         }
         else{
+
+            /*if records are less than or equal to 10 than break point will be the ceiled result we get dividing by 2*/
             $breakPoint = ceil($totalLogos / 2);
         }
 
