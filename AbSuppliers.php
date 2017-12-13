@@ -184,6 +184,19 @@ class AbSuppliers {
 
         list($atts, $supplierLogos) = $this->preparedSuppliersLogoData($atts);
 
+        $totalLogos = count($supplierLogos);
+
+
+        if($totalLogos > 12){
+            $mod6 = $totalLogos % 6;
+            $mod5 = $totalLogos % 5;
+
+            $breakPoint = (($mod6 === $mod5) || ($mod6 ===0) || ($mod6 > $mod5 && $mod5 != 0))?6:5;
+        }
+        else{
+            $breakPoint = ceil($totalLogos / 2);
+        }
+
         $counter = 0;
 
         $response = '<div class="row">';
@@ -196,7 +209,7 @@ class AbSuppliers {
             }
 
             // If $counter is divisible by $mod...
-            if($counter % $atts['mod'] == 0 && $counter != 0)
+            if($counter % $breakPoint == 0 && $counter != 0)
             {
                 // New div row
                 $response.= '</div><div class="row">';
