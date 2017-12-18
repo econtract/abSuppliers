@@ -110,7 +110,10 @@ trait Helper {
 			],
             $productid );
 		$product     = json_decode( $result )[0];
-		return $product->product_name;
+		$productName = $product->product_name;
+		unset($product);
+        unset($result);
+		return $productName;
 	}
 
     /**
