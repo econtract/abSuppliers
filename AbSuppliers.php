@@ -413,6 +413,8 @@ class AbSuppliers {
         if($returnResult === false) {
 	        $_SESSION['supplierData'] = $getSupplier;
 	        $_SESSION['supplierProducts'] = $getProducts;
+            unset($getSupplier);
+            unset($getProducts);
         } else {
         	return ['supplierData' => $getSupplier, 'supplierProducts' => $getProducts];
         }
