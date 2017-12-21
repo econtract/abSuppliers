@@ -811,7 +811,7 @@ class AbSuppliers {
                         <label for="' . $supplier['name'] . '">
                             <i class="unchecked"></i>
                             <i class="checked"></i>
-                            <span>' . $supplier['name'] . ' </span>
+                            <span>' . $supplier['name'] . '</span>
                         </label>
                     </div>';
 
