@@ -660,13 +660,13 @@ class AbSuppliers {
                 $html .= '<div class="col-md-5 infoPanel">
                             <h6>'.$review['texts']['title'].'</h6>
                             <p>'.$string.'</p>
-                            <p class="infoStamp">'.date("Y/m/d, H:i", strtotime($review['date'])).' - '.$review['author'].', '.$review['city'].'</p>
+                            <p class="infoStamp">'.date("d/m/Y, H:i", strtotime($review['date'])).' - '.$review['author'].', '.$review['city'].'</p>
                             <!--<a href="#"><i class="fa fa-thumbs-o-up"></i>Is this useful?</a>-->
                         </div>
                         <div class="col-md-3 ratingPanel">
                             <div class="row header">
                                 <div class="col-xs-8 ratingTitle">'.pll__('Total Rating').'</div>
-                                <div class="col-xs-4 countTitle">'.number_format((float)$review['score'], 1, '.', '').'</div>
+                                <div class="col-xs-4 countTitle">'.(number_format((float)$review['score'], 1, '.', '')+0).'</div>
                             </div>
                             '.$this->fetchReviewRatings($review['ratings']).'
                       </div>';
@@ -735,7 +735,7 @@ class AbSuppliers {
                         <div class="col-md-4 ratingPanel">
                             <div class="row header">
                                 <div class="col-xs-8 ratingTitle">'.pll__('Total Rating').'</div>
-                                <div class="col-xs-4 countTitle">'.number_format((float)$review['score'], 1, '.', '').'</div>
+                                <div class="col-xs-4 countTitle circled"><span>'.(number_format((float)$review['score'], 1, '.', '') + 0 ) .'</span></div>
                             </div>
                             '.$this->fetchReviewRatings($review['ratings']).'
                       </div>';
