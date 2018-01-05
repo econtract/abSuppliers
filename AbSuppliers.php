@@ -868,8 +868,9 @@ class AbSuppliers {
 
             $minimumPriceString =  "<span class='offer supplier-offer-{$supplier['id']}'>".pll__( 'No offers in your area' )."</span>";
             if ($minimumPrices && array_key_exists($supplier['id'], $minimumPrices)) {
-                $convertedPrice = $this->priceDotToCommaConversion($minimumPrices[$supplier['id']]['price']);
-                $minimumPriceString =  "<span class='offer supplier-offer-{$supplier['id']}'>".pll__( 'offers' )." " . pll__('starting from')." " . getCurrencySymbol($minimumPrices[$supplier['id']]['unit'])."  {$convertedPrice} " ."</span>";
+                $minimumPriceString =  "<span class='offer supplier-offer-{$supplier['id']}'>".pll__( 'offers' )." " . pll__('starting from')." " .
+                                       formatPrice($minimumPrices[$supplier['id']]['price'], 2, getCurrencySymbol($minimumPrices[$supplier['id']]['unit'])) .
+                                       "</span>";
             }
 
             $html .= "<li  id='li-supplier-box-{$supplier['id']}'>
