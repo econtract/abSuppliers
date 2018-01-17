@@ -645,6 +645,8 @@ class AbSuppliers {
 
         if ($reviews) {
 
+            $truncate = false;
+
             foreach ($reviews as $review){
 
                 $string = $review['texts']['contents'];
@@ -657,19 +659,27 @@ class AbSuppliers {
                     $string = substr($stringCut, 0, strrpos($stringCut, ' ')).'...';
                 }
 
-                $html .= '<div class="col-md-5 infoPanel">
-                            <h6>'.$review['texts']['title'].'</h6>
-                            <p>'.$string.'</p>
-                            <p class="infoStamp">'.date("d/m/Y, H:i", strtotime($review['date'])).' - '.$review['author'].', '.$review['city'].'</p>
-                            <!--<a href="#"><i class="fa fa-thumbs-o-up"></i>Is this useful?</a>-->
+                if (strlen($string) > 220) {
+                    $truncate = true;
+                }
+
+
+
+                $html .= "<div class='col-md-5 infoPanel'>
+                            <h6>".$review['texts']['title']."</h6>
+                            <p". (($truncate)? " class='truncate'":" "   ).'>'.$string."</p>
+                            ".(($truncate)? "<a href='#' class='readMore'><i class='fa fa-chevron-right'></i> Read more</a>":" ")."
+                           
+                            <p class='infoStamp'>".date("d/m/Y, H:i", strtotime($review['date'])).' - '.$review['author'].', '.$review['city']."</p>
+                            <!--<a href='#'><i class='fa fa-thumbs-o-up'></i>Is this useful?</a>-->
                         </div>
-                        <div class="col-md-3 ratingPanel">
-                            <div class="row header">
-                                <div class="col-xs-8 ratingTitle">'.pll__('Total Rating').'</div>
-                                <div class="col-xs-4 countTitle">'.(number_format((float)$review['score'], 1, '.', '')+0).'</div>
+                        <div class='col-md-3 ratingPanel'>
+                            <div class='row header'>
+                                <div class='col-xs-8 ratingTitle'>".pll__('Total Rating')."</div>
+                                <div class='col-xs-4 countTitle'>".(number_format((float)$review['score'], 1, '.', '')+0)."</div>
                             </div>
-                            '.$this->fetchReviewRatings($review['ratings']).'
-                      </div>';
+                            ".$this->fetchReviewRatings($review['ratings'])."
+                      </div>";
             }
         }
 
