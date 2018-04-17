@@ -72,8 +72,8 @@ trait Helper {
 
 		$router->add_route('anb_route_brand', array(
 			'path' => '^'. pll__('brands').'/(.*?)$',
-			'query_vars' => ['startScriptTime' => $startTime],
-			'page_callback' => array($this, 'suppliersCallback'),
+			'query_vars' => ['startScriptTime' => $startTime, 'supplier' => $this->getUriSegment(2)],
+			'page_callback' => array($this, 'emptyCallback'),
 			'page_arguments' =>  [],
 			'access_callback' => TRUE,
 			'title' => __( '' ),
