@@ -416,7 +416,7 @@ class AbSuppliers {
             unset($getSupplier);
             unset($getProducts);
         } else {
-        	return ['supplierData' => $getSupplier, 'supplierProducts' => $getProducts];
+        	return [$getSupplier, $getProducts];
         }
     }
 
