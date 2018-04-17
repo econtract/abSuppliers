@@ -51,9 +51,13 @@ trait Helper {
 
 	public function generateRoutes( WP_Router $router )
 	{
+		$startTime = 0;
+		if(function_exists('getStartTime')) {
+			$startTime = getStartTime();
+		}
 		$router->add_route('anb_route_product', array(
 			'path' => '^'. pll__('brands').'/(.+?)/(.+?)/?$',
-			'query_vars' => ['sid' => $this->getUriSegment(2), 'productid' => $this->getUriSegment(3), 'startScriptTime' => getStartTime()],
+			'query_vars' => ['sid' => $this->getUriSegment(2), 'productid' => $this->getUriSegment(3), 'startScriptTime' => $startTime],
 			'page_callback' => [$this, 'emptyCallback'],
 			'page_arguments' =>  [],
 			'title_callback' => [$this, 'productTitleCallback'],
@@ -68,7 +72,7 @@ trait Helper {
 
 		$router->add_route('anb_route_brand', array(
 			'path' => '^'. pll__('brands').'/(.*?)$',
-			'query_vars' => ['startScriptTime' => getStartTime()],
+			'query_vars' => ['startScriptTime' => $startTime],
 			'page_callback' => array($this, 'suppliersCallback'),
 			'page_arguments' =>  [],
 			'access_callback' => TRUE,
