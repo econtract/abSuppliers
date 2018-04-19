@@ -63,7 +63,7 @@ trait Helper {
 
         $router->add_route('anb_route_brand', array(
             'path' => '^'. pll__('brands').'/(.*?)$',
-            'query_vars' => ['startScriptTime' => $startTime],
+            'query_vars' => ['startScriptTime' => $startTime, 'supplier' => $supplier],
             'page_callback' => array($this, 'suppliersCallback'),
             'page_arguments' =>  [],
             'access_callback' => TRUE,
@@ -77,7 +77,7 @@ trait Helper {
         //Same as the previous route, just allowing /brands/<provider>/results as valid link as well, currently its invalid
         $router->add_route('anb_route_brand_results', array(
             'path' => '^'. pll__('brands').'/(.+?)/'. pll__('results').'/?$',
-            'query_vars' => ['startScriptTime' => $startTime],
+            'query_vars' => ['startScriptTime' => $startTime, 'supplier' => $supplier],
             'page_callback' => array($this, 'suppliersCallback'),
             'page_arguments' =>  [],
             'access_callback' => TRUE,
