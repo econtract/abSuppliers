@@ -3,6 +3,8 @@
 namespace abSuppliers;
 
 use AnbApiClient\Aanbieders;
+use AnbSearch\AnbCompare;
+use AnbTopDeals\AnbProduct;
 use Locale;
 
 
@@ -395,14 +397,42 @@ class AbSuppliers {
             ]
         );
 
-        $getProducts = $this->anbApi->getProducts(
-            [
-                'sid'         => $getSupplier[0]['supplier_id'],
-                'lang'        => $lang,
-                'cat'         => $this->productTypes,
-                'detaillevel' => ['reviews']
-            ]
-        );
+        $params = [
+            'pref_cs'     => [$getSupplier[0]['supplier_id']],
+            'lang'        => $lang,
+            'cat'         => $this->productTypes,
+            'detaillevel' => ['reviews']
+        ];
+
+        /*if (count($_GET['cat']) >= 2) {
+            sort($_GET['cat']);
+            $params['cp'] = getPacktypeOnCats($_GET['cat']);
+            //$params['cat'] = 'packs';
+        } else {
+            if (is_array($_GET['cat'])) {
+                $params['cat'] = (is_array($_GET['cat'])) ? $_GET['cat'][0] : $_GET['cat'];
+            }
+        }*/
+
+        $directProductCall = false;
+        if(isset($_GET['searchSubmit'])) {
+            $params['sg'] = $_GET['sg'];
+            $params['s'] = 1;
+        } else {
+            //make direct getProducts call to grab all combinations
+            $directProductCall = true;
+            unset($params['pref_cs']);
+
+            $params['sid'] = $getSupplier[0]['supplier_id'];
+        }
+
+        /** @var AnbCompare $anbComp */
+        $anbComp = wpal_create_instance(AnbCompare::class);
+
+        /** @var AnbProduct $anbProduct */
+        $anbProduct = wpal_create_instance(AnbProduct::class);
+
+        $getProducts = (!$directProductCall) ? json_decode($anbComp->getCompareResults($params), true)['results'] : json_decode($anbProduct->getProducts($params), true);
 
        // var_dump($getSupplier[0]['supplier_id'], $getProducts); die;
 
@@ -438,18 +468,17 @@ class AbSuppliers {
      * @param null $productData
      * @return array
      */
-    public function prepareSupplierProducts($productData = null) {
+    public function prepareSupplierProducts($supplierProducts = null) {
 
-        $supplierProducts = $productData;
-
-    	if(empty($productData)) {
-		    $supplierProducts = $_SESSION['supplierProducts'];
+    	if(empty($supplierProducts)) {
+            $supplierProducts = $_SESSION['supplierProducts'];
 	    }
 
         $listProducts = [];
         $temp = $packTemp = 0;
 
         foreach ($supplierProducts as $product) {
+            $product = (isset($product['product'])) ? $product['product'] : $product;
 
             if ($product['producttype'] == 'packs' && array_key_exists('packtype', $product) ) {
                 // Overwrite product type for accuracy to data set on the behalf of provided group of services
