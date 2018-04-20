@@ -905,15 +905,24 @@ class AbSuppliers {
 
         foreach ($supplierSorted as $supplier) {
 
-            $minimumPriceString =  "<span class='offer supplier-offer-{$supplier['id']}'>".pll__( 'No offers in your area' )."</span>";
+            $minimumPriceString =  "<span class='offer supplier-offer-{$supplier['id']} no-offer'>".pll__( 'No offers in your area' )."</span>";
+            $noOffer = true;
             if ($minimumPrices && array_key_exists($supplier['id'], $minimumPrices)) {
-                $minimumPriceString =  "<span class='offer supplier-offer-{$supplier['id']}'>" . pll__('offers starting from')." " .
+                $noOffer = false;
+                $minimumPriceString =  "<span class='offer supplier-offer-{$supplier['id']}'>".pll__( 'offers' )." " . pll__('starting from')." " .
                                        formatPrice($minimumPrices[$supplier['id']]['price'], 2, getCurrencySymbol($minimumPrices[$supplier['id']]['unit'])) .
                                        "</span>";
             }
 
+            $checked = 'checked';
+            $disabled = '';
+            if($noOffer) {
+                $checked = '';
+                $disabled = 'disabled';
+            }
+
             $html .= "<li  id='li-supplier-box-{$supplier['id']}'>
-                        <input type='checkbox' checked name='pref_cs[]' id='{$supplier['name']}' value='{$supplier['id']}'>
+                        <input type='checkbox' $checked $disabled name='pref_cs[]' id='{$supplier['name']}' value='{$supplier['id']}'>
                         <label for='{$supplier['name']}'>
                             <img src='{$supplier['logo']}' alt='{$supplier['name']}' class='logo'>
                             <span class='providerName'>{$supplier['name']}</span>
