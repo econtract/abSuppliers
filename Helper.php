@@ -62,7 +62,7 @@ trait Helper {
 		}
 
 		$router->add_route('anb_route_product', array(
-			'path' => '^'. pll__('brands').'/(.+?)/((!'. pll__('results').').)+/?$',
+			'path' => '^'. pll__('brands').'/(.+?)/((?!'. pll__('results').').)+/?$',
 			'query_vars' => ['sid' => $this->getUriSegment(2), 'productid' => $this->getUriSegment(3), 'startScriptTime' => $startTime],
 			'page_callback' => [$this, 'emptyCallback'],
 			'page_arguments' =>  [],
