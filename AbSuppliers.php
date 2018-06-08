@@ -95,32 +95,33 @@ class AbSuppliers {
         //generate key from params to store in cache
         $displayText = "API Call (getSuppliers) inside getSuppliers";
         $start = getStartTime();
+	    $params = [
+		    'cat'           => $atts['products'],
+		    'lang'          => $atts['lang'],
+		    'detaillevel'   => $atts['detaillevel'],
+		    'partners_only' => $atts['partners_only']
+	    ];
+
+	    if($_GET['debug']) {
+		    echo "<pre>supplier logo params>>>";
+		    print_r($params);
+		    echo "</pre>";
+	    }
+
         if ($enableCache && !isset($_GET['no_cache'])) {
-            $cacheKey = md5(implode(",", $atts)) . ":getSuppliers";
+            $cacheKey = md5(implode(",", $atts + $params['cat'])) . ":getSuppliers";
             $suppliers = get_transient($cacheKey);
 
             if($suppliers === false || empty($suppliers)) {
-                $suppliers = $this->anbApi->getSuppliers(
-                    [
-                        'cat'           => $atts['products'],
-                        'lang'          => $atts['lang'],
-                        'detaillevel'   => $atts['detaillevel'],
-                        'partners_only' => $atts['partners_only']
-                    ]
-                );
+
+                $suppliers = $this->anbApi->getSuppliers( $params );
+
                 set_transient($cacheKey, $suppliers, $cacheDurationSeconds);
             } else {
                 $displayText = "API Call Cached (getSuppliers) inside getSuppliers";
             }
         } else {
-            $suppliers = $this->anbApi->getSuppliers(
-                [
-                    'cat'           => $atts['products'],
-                    'lang'          => $atts['lang'],
-                    'detaillevel'   => $atts['detaillevel'],
-                    'partners_only' => $atts['partners_only']
-                ]
-            );
+            $suppliers = $this->anbApi->getSuppliers($params);
         }
 
         $finish = getEndTime();
@@ -183,6 +184,11 @@ class AbSuppliers {
     public function displaySupplierPartners($atts)
     {
         $atts['partners_only'] = true;
+
+        if($atts['cat'] && strpos(',', $atts['cat']) !== false) {
+	        $atts['cat'] = explode(',', $atts['cat']);
+	        $atts['cat'] = array_map('trim', $atts['cat']);//triming each value
+        }
 
         list($atts, $supplierLogos) = $this->preparedSuppliersLogoData($atts);
 
@@ -322,7 +328,7 @@ class AbSuppliers {
         $atts = shortcode_atts([
             'lang' => Locale::getPrimaryLanguage(get_locale()),
             'segments' => $this->segments,
-            'products' => $this->productTypes,
+            'products' => $atts['cat'] ?: $this->productTypes,
             'sort-by' => 'name',
             'image-size' => '100x70',
             'image-color-type' => 'transparent',
