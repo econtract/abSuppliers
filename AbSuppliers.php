@@ -140,6 +140,8 @@ class AbSuppliers {
 
         $this->totalFoundLogos = 0;
 
+	    $supplierList = [];
+
         if (is_array($suppliers)) {
             foreach ($suppliers as $supplier) {
                 $supplierList[$supplier['supplier_id']]['slug'] = $supplier['slug'];
@@ -165,7 +167,7 @@ class AbSuppliers {
      * @param $atts
      * @return array
      */
-    private function preparedSuppliersLogoData($atts)
+    protected function preparedSuppliersLogoData($atts)
     {
         $atts = $this->prepareShortCodeAttributes($atts);
 
@@ -185,12 +187,9 @@ class AbSuppliers {
     {
         $atts['partners_only'] = true;
 
-        if($atts['cat'] && strpos(',', $atts['cat']) !== false) {
-	        $atts['cat'] = explode(',', $atts['cat']);
-	        $atts['cat'] = array_map('trim', $atts['cat']);//triming each value
-        }
+	    $atts = $this->processMultipleProductCats( $atts );
 
-        list($atts, $supplierLogos) = $this->preparedSuppliersLogoData($atts);
+	    list($atts, $supplierLogos) = $this->preparedSuppliersLogoData($atts);
 
         $totalLogos = count($supplierLogos);
 
@@ -310,6 +309,8 @@ class AbSuppliers {
      */
     public function countSuppliersLogo( $atts )
     {
+    	$atts = $this->processMultipleProductCats($atts);
+
         $this->preparedSuppliersLogoData($atts);
 
         return $this->totalFoundLogos;
@@ -319,7 +320,7 @@ class AbSuppliers {
      * @param $atts
      * @return array
      */
-    private function prepareShortCodeAttributes($atts)
+    public function prepareShortCodeAttributes($atts)
     {
         // normalize attribute keys, lowercase
         $atts = array_change_key_case((array)$atts, CASE_LOWER);
@@ -456,7 +457,21 @@ class AbSuppliers {
         }
     }
 
-    /**
+	/**
+	 * @param $atts
+	 *
+	 * @return mixed
+	 */
+	protected function processMultipleProductCats( $atts ) {
+		if ( $atts['cat'] && strpos( ',', $atts['cat'] ) !== false ) {
+			$atts['cat'] = explode( ',', $atts['cat'] );
+			$atts['cat'] = array_map( 'trim', $atts['cat'] );//triming each value
+		}
+
+		return $atts;
+	}
+
+	/**
      * @param $product
      * @return string
      */
@@ -474,10 +489,12 @@ class AbSuppliers {
      * @param null $productData
      * @return array
      */
-    public function prepareSupplierProducts($supplierProducts = null) {
+    public function prepareSupplierProducts($productData = null) {
 
-    	if(empty($supplierProducts)) {
-            $supplierProducts = $_SESSION['supplierProducts'];
+        $supplierProducts = $productData;
+
+    	if(empty($productData)) {
+		    $supplierProducts = $_SESSION['supplierProducts'];
 	    }
 
         $listProducts = [];
@@ -582,6 +599,10 @@ class AbSuppliers {
             'phone'  => 'telephony',
             'tv'     => 'idtv',
             'wifi'   => 'internet',
+
+	        'electricity' => 'electricity',
+	        'dualfuel_pack' => 'dualfuel_pack',
+	        'gas' => 'gas'
         ];
 
         $html = '<ul class="list-unstyled list-inline">';
