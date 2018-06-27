@@ -53,7 +53,9 @@ trait Helper {
 	{
 		$startTime = 0;
 		$supplier = $this->getUriSegment(2);
-		$supplierSg3 = $this->getUriSegment(3);
+		if($this->getUriSegment(3)) {
+			$supplier = $this->getUriSegment(3);
+		}
 		if(isset($_GET['pref_cs'][0]) && $_GET['pref_cs'][0] > 0) {
             $supplier = $_GET['pref_cs'][0];
         }
@@ -92,7 +94,7 @@ trait Helper {
 
 		$router->add_route('anb_route_brand', array(
 			'path' => '^' . pll__('telecom') . '/' . pll__('brands').'/(.*?)$',
-			'query_vars' => ['startScriptTime' => $startTime, 'supplier' => $supplierSg3],
+			'query_vars' => ['startScriptTime' => $startTime, 'supplier' => $supplier],
 			'page_callback' => array($this, 'suppliersCallback'),
 			'page_arguments' =>  [],
 			'access_callback' => TRUE,
