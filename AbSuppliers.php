@@ -219,7 +219,11 @@ class AbSuppliers {
 
             // poly lang exists
             if (function_exists('pll_home_url')) {
-                $atts['link'] = pll_home_url().pll__('brands').'/'.$supplier['slug'];
+            	$sector = '';
+            	if($supplier['services']) {
+		            $sector = getSectorOnCats($supplier['services']);
+	            }
+                $atts['link'] = pll_home_url().$sector.'/'.pll__('brands').'/'.$supplier['slug'];
             }
 
             // If $counter is divisible by $mod...
