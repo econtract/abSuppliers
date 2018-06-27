@@ -216,17 +216,9 @@ class AbSuppliers {
         $response = '<div class="row">';
 
         foreach ($supplierLogos as $supplier) {
+	        $atts['link'] = $this->generateProviderLink( $atts, $supplier );
 
-            // poly lang exists
-            if (function_exists('pll_home_url')) {
-            	$sector = '';
-            	if($supplier['services']) {
-		            $sector = getSectorOnCats($supplier['services']);
-	            }
-                $atts['link'] = pll_home_url().$sector.'/'.pll__('brands').'/'.$supplier['slug'];
-            }
-
-            // If $counter is divisible by $mod...
+	        // If $counter is divisible by $mod...
             if($counter % $breakPoint == 0 && $counter != 0)
             {
                 // New div row
@@ -267,10 +259,7 @@ class AbSuppliers {
 
         foreach ($supplierLogos as $supplier) {
 
-            // poly lang exists
-            if (function_exists('pll_home_url')) {
-                $atts['link'] = pll_home_url().pll__('brands').'/'.$supplier['slug'];
-            }
+	        $atts['link'] = $this->generateProviderLink( $atts, $supplier );
 
             // If $counter is divisible by $mod...
             if($counter % $atts['mod'] == 0 && $counter != 0)
@@ -473,6 +462,24 @@ class AbSuppliers {
 		}
 
 		return $atts;
+	}
+
+	/**
+	 * @param $atts
+	 * @param $supplier
+	 *
+	 * @return mixed
+	 */
+	protected function generateProviderLink( $atts, $supplier ) {
+		// poly lang exists
+		$link = '';
+		$sector = '';
+		if ( $supplier['services'] ) {
+			$sector = getSectorOnCats( $supplier['services'] );
+		}
+		$link = ((function_exists( 'pll_home_url' )) ? pll_home_url() : get_home_url()) . $sector . '/' . pll__( 'brands' ) . '/' . $supplier['slug'];
+
+		return $link;
 	}
 
 	/**
