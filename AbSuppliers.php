@@ -55,6 +55,12 @@ class AbSuppliers {
         //'idtv'
     ];
 
+	public $productTypesEnergy = [
+		'dualfuel_pack',
+		'electricity',
+		'gas'
+	];
+
     /**
      * @var int
      */
@@ -250,7 +256,7 @@ class AbSuppliers {
      * @param $atts
      * @return string
      */
-    public function prepareSuppliersForOverview($atts )
+    public function prepareSuppliersForOverview( $atts )
     {
         list($atts, $supplierLogos) = $this->preparedSuppliersLogoData($atts);
 
@@ -433,8 +439,6 @@ class AbSuppliers {
         $anbProduct = wpal_create_instance(AnbProduct::class);
 
         $getProducts = (!$directProductCall) ? json_decode($anbComp->getCompareResults($params), true)['results'] : json_decode($anbProduct->getProducts($params), true);
-
-       // var_dump($getSupplier[0]['supplier_id'], $getProducts); die;
 
         if(session_id() == '') {
             session_start();
@@ -638,21 +642,36 @@ class AbSuppliers {
      */
     private function prepareReviewShortCodeParams($atts)
     {
+	    $sector = ($this->getUriSegment(3)) ? $this->getUriSegment(1) : pll__('telecom');
         // get supplier slug from url
-        $supplier = $this->getUriSegment(2);
+	    if(!isset($atts['pref_cs'])) {
+		    $supplier = $this->getUriSegment(3);
+	    } else {
+	    	$supplier = $atts['pref_cs'];
+	    }
 
         // normalize attribute keys, lowercase
         $atts = array_change_key_case((array)$atts, CASE_LOWER);
 
+	    $defaultProductTypes = ($sector == pll__('energy')) ? $this->productTypesEnergy : $this->productTypes;
+
+	    $params = [
+		    'lang' => $this->getLanguage(),
+		    'cat' => $defaultProductTypes,
+		    'pref_cs' => $supplier,
+		    'limit' => '1',
+		    'html'  => true,
+		    'mark-up' => 'div'
+	    ];
+
+	    if($atts['cat']) {
+	    	//handling both space coma and without space comma
+		    $atts['cat'] = explode(', ', $atts['cat']);
+		    $atts['cat'] = explode(',', $atts['cat']);
+	    }
+
         // override default attributes with user attributes
-        return shortcode_atts([
-            'lang' => $this->getLanguage(),
-            'cat' => $this->productTypes,
-            'pref_cs' => $supplier,
-            'limit' => '1',
-            'html'  => true,
-            'mark-up' => 'div'
-        ], $atts, 'anb_supplier_reviews');
+        return shortcode_atts($params, $atts, 'anb_supplier_reviews');
     }
 
     /**
@@ -673,7 +692,7 @@ class AbSuppliers {
         $start = getStartTime();
         $displayText = "Time API (Reviews) inside getReviews";
         if ($enableCache && !isset($_GET['no_cache'])) {
-            $cacheKey = md5(implode(",", $atts)) . ":getReviews";
+            $cacheKey = md5(serialize($atts)) . ":getReviews";
             $reviews = get_transient($cacheKey);
 
             if($suppliers === false || empty($reviews)) {
@@ -695,6 +714,7 @@ class AbSuppliers {
                 $atts
             );
         }
+
         $finish = getEndTime();
         displayCallTime($start, $finish, $displayText);
         return $reviews;
