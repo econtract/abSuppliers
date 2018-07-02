@@ -105,6 +105,19 @@ trait Helper {
 			)
 		));
 
+		$router->add_route('anb_route_brand', array(
+			'path' => '^' . pll__('energy') . '/' . pll__('brands').'/(.*?)$',
+			'query_vars' => ['startScriptTime' => $startTime, 'supplier' => $supplier],
+			'page_callback' => array($this, 'suppliersCallback'),
+			'page_arguments' =>  [],
+			'access_callback' => TRUE,
+			'title' => __( '' ),
+			'template' => array(
+				'page-provider-details-energy.php',
+				get_template_directory() . 'page-provider-details-energy.php'
+			)
+		));
+
         //Same as the previous route, just allowing /brands/<provider>/results as valid link as well, currently its invalid
         $router->add_route('anb_route_brand_results', array(
             'path' => '^'. pll__('brands').'/(.+?)/'. pll__('results').'/?$',
