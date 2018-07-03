@@ -107,7 +107,7 @@ trait Helper {
             )
         ));
 
-		$router->add_route('anb_route_brand', array(
+		$router->add_route('anb_route_brand_details', array(
 			'path' => '^' . pll__('telecom') . '/' . pll__('brands').'/(.*?)$',
 			'query_vars' => ['startScriptTime' => $startTime, 'supplier' => $supplier],
 			'page_callback' => array($this, 'suppliersCallback'),
@@ -120,7 +120,7 @@ trait Helper {
 			)
 		));
 
-		$router->add_route('anb_route_brand', array(
+		$router->add_route('anb_route_brand_details_energy', array(
 			'path' => '^' . pll__('energy') . '/' . pll__('brands').'/(.*?)$',
 			'query_vars' => ['startScriptTime' => $startTime, 'supplier' => $supplier],
 			'page_callback' => array($this, 'suppliersCallback'),

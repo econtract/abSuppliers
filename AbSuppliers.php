@@ -664,14 +664,14 @@ class AbSuppliers {
 		    'mark-up' => 'div'
 	    ];
 
-	    if($atts['cat']) {
+	    if($atts['cat'] && !empty(trim($atts['cat']))) {
 	    	//handling both space coma and without space comma
 		    $atts['cat'] = explode(', ', $atts['cat']);
 		    $atts['cat'] = explode(',', $atts['cat']);
 	    }
 
         // override default attributes with user attributes
-        return shortcode_atts($params, $atts, 'anb_supplier_reviews');
+	    return shortcode_atts($params, $atts, 'anb_supplier_reviews');
     }
 
     /**
@@ -685,6 +685,7 @@ class AbSuppliers {
         }
 
         $atts = $this->prepareReviewShortCodeParams($atts);
+
         $reviews = null;
 
         //generate key from params to store in cache
@@ -786,7 +787,7 @@ class AbSuppliers {
             ];
         }
 
-        $atts = $this->prepareReviewShortCodeParams($atts);
+	    $atts = $this->prepareReviewShortCodeParams($atts);
         $reviews = null;
 
         if (!$reviews) {
