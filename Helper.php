@@ -79,6 +79,21 @@ trait Helper {
 			)
 		));
 
+		$router->add_route('anb_route_product_new', array(
+			'path' => '^'.pll__('telecom').'/'. pll__('brands').'/(.+?)/((?!'. pll__('results').').)+/?$',
+			'query_vars' => ['sid' => $this->getUriSegment(3), 'productid' => $this->getUriSegment(4), 'startScriptTime' => $startTime],
+			'page_callback' => [$this, 'emptyCallback'],
+			'page_arguments' =>  [],
+			'title_callback' => [$this, 'productTitleCallback'],
+			'title_arguments' => [$this->getUriSegment(3), $this->getUriSegment(4)],
+			'access_callback' => true,
+			'title' => __( '' ),
+			'template' => array(
+				'anb-product.php',
+				get_template_directory() . 'anb-product.php'
+			)
+		));
+
 		$router->add_route('anb_route_product_energy', array(
 			'path' => '^'.pll__('energy').'/'.pll__('brands').'/(.+?)/((?!'. pll__('results').').)+/?$',
 			'query_vars' => ['sid' => $this->getUriSegment(3), 'productid' => $this->getUriSegment(4), 'startScriptTime' => $startTime],
