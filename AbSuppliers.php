@@ -321,13 +321,15 @@ class AbSuppliers {
      */
     public function prepareShortCodeAttributes($atts)
     {
+	    $atts = $this->catsToArray( $atts );
+
         // normalize attribute keys, lowercase
         $atts = array_change_key_case((array)$atts, CASE_LOWER);
 
         // override default attributes with user attributes
         $atts = shortcode_atts([
             'lang' => Locale::getPrimaryLanguage(get_locale()),
-            'segments' => $this->segments,
+            'segments' => $atts['sg'] ?: $this->segments,
             'products' => $atts['cat'] ?: $this->productTypes,
             'sort-by' => 'name',
             'image-size' => '100x70',
@@ -460,10 +462,7 @@ class AbSuppliers {
 	 * @return mixed
 	 */
 	protected function processMultipleProductCats( $atts ) {
-		if ( $atts['cat'] && strpos( ',', $atts['cat'] ) !== false ) {
-			$atts['cat'] = explode( ',', $atts['cat'] );
-			$atts['cat'] = array_map( 'trim', $atts['cat'] );//triming each value
-		}
+		$atts = $this->catsToArray($atts);
 
 		return $atts;
 	}
@@ -484,6 +483,21 @@ class AbSuppliers {
 		$link = ((function_exists( 'pll_home_url' )) ? pll_home_url() : get_home_url()) . $sector . '/' . pll__( 'brands' ) . '/' . $supplier['slug'];
 
 		return $link;
+	}
+
+	/**
+	 * @param $atts
+	 *
+	 * @return mixed
+	 */
+	public function catsToArray( $atts ) {
+		if ( $atts['cat'] && ! empty( trim( $atts['cat'] ) ) ) {
+			//handling both space coma and without space comma
+			$atts['cat'] = explode( ',', $atts['cat'] );
+			$atts['cat'] = array_map( 'trim', $atts['cat'] );//triming each value
+		}
+
+		return $atts;
 	}
 
 	/**
@@ -664,11 +678,7 @@ class AbSuppliers {
 		    'mark-up' => 'div'
 	    ];
 
-	    if($atts['cat'] && !empty(trim($atts['cat']))) {
-	    	//handling both space coma and without space comma
-		    $atts['cat'] = explode(', ', $atts['cat']);
-		    $atts['cat'] = explode(',', $atts['cat']);
-	    }
+	    $atts = $this->catsToArray($atts);
 
         // override default attributes with user attributes
 	    return shortcode_atts($params, $atts, 'anb_supplier_reviews');
@@ -873,11 +883,10 @@ class AbSuppliers {
     /**
      * @return string
      */
-    public function suppliersForResultFilters()
+    public function suppliersForResultFilters($atts = [])
     {
-        $atts = [
-          'sort-by' => 'is_partner'
-        ];
+        $atts['sort-by'] = 'is_partner';
+
         $html = '';
         $nonPartner = false;
 
