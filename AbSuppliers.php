@@ -390,7 +390,7 @@ class AbSuppliers {
      * @param bool $returnResult
      * @return array
      */
-    public function suppliersCallback( $supplier="", $returnResult = false )
+    public function suppliersCallback( $supplier="", $returnResult = false, $forceCallToCompare = false )
     {
     	if(empty($supplier)) {
 		    $supplier = $this->getUriSegment(2);
@@ -423,6 +423,7 @@ class AbSuppliers {
         }*/
 
         $directProductCall = false;
+        $prefCs = $params['pref_cs'];
         if(isset($_GET['searchSubmit'])) {
             $params['sg'] = $_GET['sg'];
             $params['s'] = 1;
@@ -432,6 +433,10 @@ class AbSuppliers {
             unset($params['pref_cs']);
 
             $params['sid'] = $getSupplier[0]['supplier_id'];
+            if($forceCallToCompare) {
+            	unset($params['sid']);
+	            $params['pref_cs'] = $prefCs;//compare doesn't use sid, that is used by product api
+            }
         }
 
         /** @var AnbCompare $anbComp */
@@ -440,7 +445,7 @@ class AbSuppliers {
         /** @var AnbProduct $anbProduct */
         $anbProduct = wpal_create_instance(AnbProduct::class);
 
-        $getProducts = (!$directProductCall) ? json_decode($anbComp->getCompareResults($params), true)['results'] : json_decode($anbProduct->getProducts($params), true);
+        $getProducts = (!$directProductCall || $forceCallToCompare) ? json_decode($anbComp->getCompareResults($params), true)['results'] : json_decode($anbProduct->getProducts($params), true);
 
         if(session_id() == '') {
             session_start();
@@ -501,6 +506,25 @@ class AbSuppliers {
 	}
 
 	/**
+	 * @param $product
+	 *
+	 * @return array
+	 */
+	protected function extractFeeFromProduct( $product ) {
+		$sector = getSectorOnProducttype( $product['producttype'] );
+
+		if($sector == pll__('energy')) {
+			$value  = $product['pricing']['monthly']['promo_price'];
+			$unit   = getCurrencySymbol($this->getLanguage());
+		} else {
+			$value  = $product['monthly_fee']['value'];
+			$unit   = $product['monthly_fee']['unit'];
+		}
+
+		return array( $value, $unit );
+	}
+
+	/**
      * @param $product
      * @return string
      */
@@ -530,7 +554,12 @@ class AbSuppliers {
         $temp = $packTemp = 0;
 
         foreach ($supplierProducts as $product) {
+        	$pricing = [];
+        	if(isset($product['pricing'])) {
+        		$pricing = $product['pricing'];
+	        }
             $product = (isset($product['product'])) ? $product['product'] : $product;
+        	$product['pricing'] = $pricing;//associating pricing information to the product
 
             if ($product['producttype'] == 'packs' && array_key_exists('packtype', $product) ) {
                 // Overwrite product type for accuracy to data set on the behalf of provided group of services
@@ -587,8 +616,9 @@ class AbSuppliers {
 
                 //check if this is first loop then assign first value as $min
                 if ($otherOffers == 0) {
-                    $listProducts[$product['producttype']][$product['segment']]['fee'] = $temp = $product['monthly_fee']['value'];
-                    $listProducts[$product['producttype']][$product['segment']]['unit'] = $product['monthly_fee']['unit'];
+	                list( $value, $unit ) = $this->extractFeeFromProduct( $product );
+                    $listProducts[$product['producttype']][$product['segment']]['fee'] = $temp = $value;
+                    $listProducts[$product['producttype']][$product['segment']]['unit'] = $unit;
                 }
 
                 //if this is not first loop then go in this if
@@ -596,9 +626,9 @@ class AbSuppliers {
 
                     //check if this value of array is lesser than $temp
                     if ((int)$product['monthly_fee']['value'] < (int)$temp) {
-                        $listProducts[$product['producttype']][$product['segment']]['fee'] = $product['monthly_fee']['value'];
-                        $listProducts[$product['producttype']][$product['segment']]['unit'] = $product['monthly_fee']['unit'];
-
+	                    list( $newValue, $newUnit ) = $this->extractFeeFromProduct( $product );
+                        $listProducts[$product['producttype']][$product['segment']]['fee'] = $newValue;
+                        $listProducts[$product['producttype']][$product['segment']]['unit'] = $newUnit;
                     }
                 }
 
