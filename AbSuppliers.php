@@ -902,7 +902,7 @@ class AbSuppliers {
             foreach ($reviewRatings as $key => $reviewRating) {
                 $html .= '<div class="row">
                 <div class="col-xs-8 ratingCaption">' . (!empty($reviewRating['label']) ? $reviewRating['label'] : $key) . '</div>
-                <div class="col-xs-4 ratingCount">' . $reviewRating['score'] . '</div>
+                <div class="col-xs-4 ratingCount">' . displayReviewRating($reviewRating['score']) . '</div>
             </div>';
             }
         }
