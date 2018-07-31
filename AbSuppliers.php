@@ -804,7 +804,7 @@ class AbSuppliers {
                         <div class='col-md-3 ratingPanel'>
                             <div class='row header'>
                                 <div class='col-xs-8 ratingTitle'>".pll__('Total Rating')."</div>
-                                <div class='col-xs-4 countTitle'>".(number_format((float)$review['score'], 1, ',', ''))."</div>
+                                <div class='col-xs-4 countTitle'>".displayReviewRating($review['score'])."</div>
                             </div>
                             ".$this->fetchReviewRatings($review['ratings'])."
                       </div>";
@@ -873,7 +873,7 @@ class AbSuppliers {
                         <div class="col-md-4 ratingPanel">
                             <div class="row header">
                                 <div class="col-xs-8 ratingTitle">'.pll__('Total Rating').'</div>
-                                <div class="col-xs-4 countTitle circled"><span>'.(number_format((float)$review['score'], 1, ',', '') ) .'</span></div>
+                                <div class="col-xs-4 countTitle circled"><span>'.displayReviewRating($review['score']).'</span></div>
                             </div>
                             '.$this->fetchReviewRatings($review['ratings']).'
                       </div>';
