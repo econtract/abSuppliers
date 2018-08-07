@@ -671,6 +671,10 @@ class AbSuppliers {
 
         foreach ($provider['services'] as $key => $service) {
             if (in_array($service, $checkFor)) {
+	            if($service == 'dualfuel_pack') {//only display dualfuel pack no need to display gas and electricity here
+		            $html .= '<li service="' . $service . '"> <i class="service-icons white ' . array_search($service, $checkFor) . '"></i> </li>';
+		            break;
+	            }
                 $html .= '<li> <i class="service-icons white '. array_search($service, $checkFor).'"></i> </li>';
             }
         }
