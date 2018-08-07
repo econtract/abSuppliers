@@ -669,9 +669,14 @@ class AbSuppliers {
         // Alphabetically sort array to services consistent
         sort($provider['services']);
 
-        foreach ($provider['services'] as $key => $service) {
-            if (in_array($service, $checkFor)) {
-                $html .= '<li> <i class="service-icons white '. array_search($service, $checkFor).'"></i> </li>';
+        foreach ($provider['services'] as $key => $service){
+            if (in_array($service, $checkFor)){
+                if($service == 'dualfuel_pack') {
+                    $html .= '<li service="' . $service . '"> <i class="service-icons white ' . array_search($service, $checkFor) . '"></i> </li>';
+                    break;
+                } else {
+                    $html .= '<li service="' . $service . '"> <i class="service-icons white ' . array_search($service, $checkFor) . '"></i> </li>';
+                }
             }
         }
 
