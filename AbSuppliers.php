@@ -425,6 +425,15 @@ class AbSuppliers {
         $directProductCall = false;
         $prefCs = $params['pref_cs'];
         if(isset($_GET['searchSubmit'])) {
+            $nou = (isset($_GET['exc_night_meter']) && $_GET['exc_night_meter'] == 1)? $_GET['nou'] : '';
+            $du = $_GET['du'];
+            if(isset($_GET['meter']) && $_GET['meter'] == 'double') {
+                $nu = $_GET['nu'];
+            }
+            $has_solar = (isset($_GET['has_solar']) && $_GET['has_solar'] == 1)? $_GET['has_solar'] : '';
+            $params['du'] = $du;
+            $params['nu'] = $nu;
+            $params['nou'] = $nou;
             $params['sg'] = $_GET['sg'];
             $params['s'] = 1;
         } else {
