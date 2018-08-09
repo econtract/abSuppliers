@@ -425,6 +425,15 @@ class AbSuppliers {
         $directProductCall = false;
         $prefCs = $params['pref_cs'];
         if(isset($_GET['searchSubmit'])) {
+            $nou = (isset($_GET['exc_night_meter']) && $_GET['exc_night_meter'] == 1)? $_GET['nou'] : '';
+            $du = $_GET['du'];
+            if(isset($_GET['meter']) && $_GET['meter'] == 'double') {
+                $nu = $_GET['nu'];
+            }
+            $has_solar = (isset($_GET['has_solar']) && $_GET['has_solar'] == 1)? $_GET['has_solar'] : '';
+            $params['du'] = $du;
+            $params['nu'] = $nu;
+            $params['nou'] = $nou;
             $params['sg'] = $_GET['sg'];
             $params['s'] = 1;
         } else {
@@ -669,14 +678,13 @@ class AbSuppliers {
         // Alphabetically sort array to services consistent
         sort($provider['services']);
 
-        foreach ($provider['services'] as $key => $service){
-            if (in_array($service, $checkFor)){
-                if($service == 'dualfuel_pack') {
-                    $html .= '<li service="' . $service . '"> <i class="service-icons white ' . array_search($service, $checkFor) . '"></i> </li>';
-                    break;
-                } else {
-                    $html .= '<li service="' . $service . '"> <i class="service-icons white ' . array_search($service, $checkFor) . '"></i> </li>';
-                }
+        foreach ($provider['services'] as $key => $service) {
+            if (in_array($service, $checkFor)) {
+	            if($service == 'dualfuel_pack') {//only display dualfuel pack no need to display gas and electricity here
+		            $html .= '<li service="' . $service . '"> <i class="service-icons white ' . array_search($service, $checkFor) . '"></i> </li>';
+		            break;
+	            }
+                $html .= '<li> <i class="service-icons white '. array_search($service, $checkFor).'"></i> </li>';
             }
         }
 
