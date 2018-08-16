@@ -552,7 +552,6 @@ class AbSuppliers {
      * @return array
      */
     public function prepareSupplierProducts($productData = null) {
-
         $supplierProducts = $productData;
 
     	if(empty($productData)) {
@@ -582,7 +581,6 @@ class AbSuppliers {
                 $i = 0;
             }
 
-
             if ($product['producttype'] == 'packs' &&
                 !isset($listProducts[$product['producttype']][$product['segment']][$product['packtype']])) {
                 $listProducts[$product['producttype']][$product['segment']][$product['packtype']] = [];
@@ -591,7 +589,6 @@ class AbSuppliers {
             }
 
             if (array_key_exists('packtype', $product)) {
-
                 //check if this is first loop then assign first value as $min
                 if ($subPack == 0) {
                     $listProducts[$product['producttype']][$product['segment']][$product['packtype']]['fee'] = $packTemp = $product['monthly_fee']['value'];
@@ -603,7 +600,6 @@ class AbSuppliers {
                     if ((int)$product['monthly_fee']['value'] < (int)$packTemp) {
                         $listProducts[$product['producttype']][$product['segment']][$product['packtype']]['fee'] = $product['monthly_fee']['value'];
                         $listProducts[$product['producttype']][$product['segment']][$product['packtype']]['unit'] = $product['monthly_fee']['unit'];
-
                     }
                 }
 
@@ -611,7 +607,6 @@ class AbSuppliers {
                     $listProducts[$product['producttype']][$product['segment']][$product['packtype']]['count']++;
                     $subPack++;
                 }
-
             }
 
             // Don't check fee for the top level packs
@@ -652,6 +647,7 @@ class AbSuppliers {
             }
 
         }
+
         return $listProducts;
     }
 
