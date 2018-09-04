@@ -279,28 +279,46 @@ class AbSuppliers {
                 // New div row
                 $response.= '</div><div class="row">';
             }
-            $response .= '<' .$atts['mark-up'] . ' class="col-sm-3" >'.
-                '<div class="provider" >'.
-                /*'<div class="bestReviewBadge" >'.
-                        '<span>BEST</span>'.
-                        '<span class="bold">Review</span>'.
-                '</div>'.*/
-                '<div class="providerWrapper" >'.
-                    '<img src="' .$supplier['logo'] . '"'.
-                          ' alt="' . $supplier['name'] . '">'.
-                '<div class="moreInfo">'
-                .'<h4>'. $supplier['name'] .'</h4>'.
-                '<div class="services">'.
-                $this->acquireService($supplier).
-                '</div>'.
-                '<div class="btnWrapper">
-                   <a href='.$atts['link'].' class="btn btn-primary">'.pll__('More Info').'</a>
-                 </div>'.
-                '</div>'.
-                '</div>
-                    </div>'.
-                '</' .$atts['mark-up'] . '>';
-
+            if($supplier['is_partner'] == 1) {
+                $response .= '<' . $atts['mark-up'] . ' class="col-sm-3" >' .
+                    '<div class="provider" >' .
+                    /*'<div class="bestReviewBadge" >'.
+                            '<span>BEST</span>'.
+                            '<span class="bold">Review</span>'.
+                    '</div>'.*/
+                    '<div class="providerWrapper" >' .
+                    '<img src="' . $supplier['logo'] . '"' .
+                    ' alt="' . $supplier['name'] . '">' .
+                    '<div class="moreInfo">'
+                    . '<h4>' . $supplier['name'] . '</h4>' .
+                    '<div class="services">' .
+                    $this->acquireService($supplier) .
+                    '</div>' .
+                    '<div class="btnWrapper">
+                   <a href=' . $atts['link'] . ' class="btn btn-primary">' . pll__('More Info') . '</a>
+                 </div>' .
+                    '</div>' .
+                    '</div>
+                    </div>' .
+                    '</' . $atts['mark-up'] . '>';
+            } else {
+                $response .= '<' . $atts['mark-up'] . ' class="col-sm-3" >' .
+                    '<div class="provider" >' .
+                    '<div class="providerWrapper suppliertext">'
+                    . $supplier['name'] .
+                    '<div class="moreInfo">'
+                    . '<h4>' . $supplier['name'] . '</h4>' .
+                    '<div class="services">' .
+                    $this->acquireService($supplier) .
+                    '</div>' .
+                    '<div class="btnWrapper">
+                   <a href=' . $atts['link'] . ' class="btn btn-primary">' . pll__('More Info') . '</a>
+                 </div>' .
+                    '</div>' .
+                    '</div>
+                    </div>' .
+                    '</' . $atts['mark-up'] . '>';
+            }
             $counter++;
         }
 
