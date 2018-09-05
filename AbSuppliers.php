@@ -230,21 +230,16 @@ class AbSuppliers {
                 // New div row
                 $response.= '</div><div class="row">';
             }
-            if(empty($atts['partners_only']) || $atts['partners_only'] === false){
-                $response .= '<' .$atts['mark-up'] .
-                    ' class="' . $atts['mark-up-class'] . '">'.
-                    $supplier['name'].
-                    '</' .$atts['mark-up'] . '>';
-            } else {
-                $response .= '<' . $atts['mark-up'] .
-                    ' class="' . $atts['mark-up-class'] . '">' .
-                    '<a href="' . $atts['link'] . '"' .
-                    ' title="' . $supplier['name'] . '">' .
-                    '<img src="' . $supplier['logo'] . '"' .
-                    ' alt="' . $supplier['name'] . '">' .
-                    '</a>' .
-                    '</' . $atts['mark-up'] . '>';
-            }
+            $greyClass = '';
+            if(empty($atts['partners_only']) || $atts['partners_only'] === false){ $greyClass = 'partnergrey'; }
+            $response .= '<' . $atts['mark-up'] .
+                ' class="' . $atts['mark-up-class'] . '">' .
+                '<a href="' . $atts['link'] . '"' .
+                ' title="' . $supplier['name'] . '">' .
+                '<img class="'. $greyClass .'" src="' . $supplier['logo'] . '"' .
+                ' alt="' . $supplier['name'] . '">' .
+                '</a>' .
+                '</' . $atts['mark-up'] . '>';
             $counter++;
         }
 
