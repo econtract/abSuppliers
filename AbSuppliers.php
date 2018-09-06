@@ -274,10 +274,13 @@ class AbSuppliers {
                 // New div row
                 $response.= '</div><div class="row">';
             }
-            $logoStr = '<div class="suppliertext">'.$supplier['name'].'</div>';
+            /*$logoStr = '<div class="suppliertext">'.$supplier['name'].'</div>';
             if($supplier['is_partner'] == 1) {
                 $logoStr = '<img src="' . $supplier['logo'] . '" alt="' . $supplier['name'] . '">';
-            }
+            }*/
+            $greyClass = 'partnergrey';
+            if($supplier['is_partner'] == 1){ $greyClass = ''; }
+            $logoStr = '<img class="'.$greyClass.'" src="' . $supplier['logo'] . '" alt="' . $supplier['name'] . '">';
             $response .= '<' . $atts['mark-up'] . ' class="col-sm-3" >' .
                     '<div class="provider" >' .
                     /*'<div class="bestReviewBadge"><span>BEST</span><span class="bold">Review</span></div>'.*/
