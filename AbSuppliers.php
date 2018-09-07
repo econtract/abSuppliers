@@ -105,8 +105,12 @@ class AbSuppliers {
 		    'cat'           => $atts['products'],
 		    'lang'          => $atts['lang'],
 		    'detaillevel'   => $atts['detaillevel'],
-		    'partners_only' => $atts['partners_only']
+		    'partners_only' => $atts['partners_only'],
+		    'pref_cs'       => $atts['pref_cs']
 	    ];
+
+	    //remove empty values
+	    $params = array_filter($params);
 
 	    if($_GET['debug']) {
 		    echo "<pre>supplier logo params>>>";
@@ -115,14 +119,18 @@ class AbSuppliers {
 	    }
 
         if ($enableCache && !isset($_GET['no_cache'])) {
-            $cacheKey = md5(implode(",", $atts + $params['cat'])) . ":getSuppliers";
-            $suppliers = get_transient($cacheKey);
+	    	$keyParams = $atts;
+	    	if(isset($params['cat'])) {
+			    $keyParams = $atts + $params['cat'];
+		    }
+            $cacheKey = md5(serialize($keyParams) . $_SERVER['REQUEST_URI']) . ":getSuppliers";
+            $suppliers = mycache_get($cacheKey);
 
             if($suppliers === false || empty($suppliers)) {
 
                 $suppliers = $this->anbApi->getSuppliers( $params );
 
-                set_transient($cacheKey, $suppliers, $cacheDurationSeconds);
+	            mycache_set($cacheKey, $suppliers, $cacheDurationSeconds);
             } else {
                 $displayText = "API Call Cached (getSuppliers) inside getSuppliers";
             }
@@ -400,12 +408,16 @@ class AbSuppliers {
 
         $lang = $this->getLanguage();
 
-        $getSupplier = $this->anbApi->getSuppliers(
+        /*$getSupplier = $this->anbApi->getSuppliers(
             [
                 'pref_cs' => $supplier,
                 'lang'    => $lang
             ]
-        );
+        );*/
+        $getSupplier = $this->getSuppliers([
+	        'pref_cs' => $supplier,
+	        'lang'    => $lang
+        ]);
 
         $params = [
             'pref_cs'     => [$getSupplier[0]['supplier_id']],
@@ -745,13 +757,13 @@ class AbSuppliers {
         $displayText = "Time API (Reviews) inside getReviews";
         if ($enableCache && !isset($_GET['no_cache'])) {
             $cacheKey = md5(serialize($atts)) . ":getReviews";
-            $reviews = get_transient($cacheKey);
+            $reviews = mycache_get($cacheKey);
 
             if($suppliers === false || empty($reviews)) {
                 $reviews = $this->anbApi->getReviews(
                     $atts
                 );
-                set_transient($cacheKey, $reviews, $cacheDurationSeconds);
+	            mycache_set($cacheKey, $reviews, $cacheDurationSeconds);
             } else {
                 $displayText = "Time API Cached (Reviews) inside getReviews";
             }
