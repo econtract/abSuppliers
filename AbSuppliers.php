@@ -127,21 +127,19 @@ class AbSuppliers {
             $suppliers = mycache_get($cacheKey);
 
             if($suppliers === false || empty($suppliers)) {
-
-                $suppliers = $this->anbApi->getSuppliers( $params );
-
+                $suppliers = json_encode($this->anbApi->getSuppliers( $params ));
 	            mycache_set($cacheKey, $suppliers, $cacheDurationSeconds);
             } else {
                 $displayText = "API Call Cached (getSuppliers) inside getSuppliers";
             }
         } else {
-            $suppliers = $this->anbApi->getSuppliers($params);
+            $suppliers = json_encode($this->anbApi->getSuppliers($params));
         }
 
         $finish = getEndTime();
         displayCallTime($start, $finish, $displayText);
 
-        return $suppliers;
+        return ($suppliers) ? json_decode($suppliers, true) : $suppliers;
     }
 
     /**
