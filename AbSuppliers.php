@@ -758,28 +758,30 @@ class AbSuppliers {
             $reviews = mycache_get($cacheKey);
 
             if($suppliers === false || empty($reviews)) {
-                $reviews = $this->anbApi->getReviews(
+                $reviews = json_encode($this->anbApi->getReviews(
                     $atts
-                );
+                ));
+
 	            mycache_set($cacheKey, $reviews, $cacheDurationSeconds);
             } else {
                 $displayText = "Time API Cached (Reviews) inside getReviews";
             }
         } else {
-            $reviews = $this->anbApi->getReviews(
+            $reviews = json_encode($this->anbApi->getReviews(
                 $atts
-            );
+            ));
         }
 
         if (!$reviews) {
-            $reviews = $this->anbApi->getReviews(
+            $reviews = json_encode($this->anbApi->getReviews(
                 $atts
-            );
+            ));
         }
 
         $finish = getEndTime();
         displayCallTime($start, $finish, $displayText);
-        return $reviews;
+
+	    return ($reviews) ? json_decode($reviews, true) : $reviews;
     }
 
     /**
