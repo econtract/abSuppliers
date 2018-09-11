@@ -123,7 +123,7 @@ class AbSuppliers {
 	    	if(isset($params['cat'])) {
 			    $keyParams = $atts + $params['cat'];
 		    }
-            $cacheKey = md5(serialize($keyParams) . $_SERVER['REQUEST_URI']) . ":getSuppliers";
+            $cacheKey = md5(serialize($keyParams)) . ":getSuppliers";
             $suppliers = mycache_get($cacheKey);
 
             if($suppliers === false || empty($suppliers)) {
