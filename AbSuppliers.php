@@ -103,7 +103,7 @@ class AbSuppliers {
 
     function enqueueScripts()
     {
-        wp_enqueue_script('suppliers-ajax', plugins_url('/js/suppliers-ajax.js', __FILE__), array('jquery'), '1.0.0', true);
+        wp_enqueue_script('suppliers-ajax', plugins_url('/js/suppliers-ajax.js', __FILE__), array('jquery'), '1.0.1', true);
         wp_localize_script('suppliers-ajax', 'suppliers_ajax_vars',
             array(
                 'ajax_url' => admin_url('admin-ajax.php'),
