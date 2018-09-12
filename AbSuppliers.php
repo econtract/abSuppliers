@@ -8,6 +8,15 @@ use AnbTopDeals\AnbProduct;
 use Locale;
 
 
+if(!function_exists('getLanguage')) {
+    function getLanguage()
+    {
+        //get locale
+        $locale = function_exists('pll_current_language') ? pll_current_language() : Locale::getPrimaryLanguage(get_locale());
+
+        return $locale;
+    }
+}
 
 /**
  * Class abSuppliers
@@ -84,6 +93,25 @@ class AbSuppliers {
 
         // add string for the plugin to polylang
         add_action('init', array($this, 'registerStringsForLocalization'));
+
+        add_action( 'wp_enqueue_scripts', array($this, 'enqueueScripts') );
+    }
+
+    /**
+     * AJAX scripts
+    **/
+
+    function enqueueScripts()
+    {
+        wp_enqueue_script('suppliers-ajax', plugins_url('/js/suppliers-ajax.js', __FILE__), array('jquery'), '1.0.0', true);
+        wp_localize_script('suppliers-ajax', 'suppliers_ajax_vars',
+            array(
+                'ajax_url' => admin_url('admin-ajax.php'),
+                'site_url' => get_home_url(),
+                'template_uri' => get_template_directory_uri(),
+                'lang' => getLanguage(),
+            )
+        );
     }
 
     /**
