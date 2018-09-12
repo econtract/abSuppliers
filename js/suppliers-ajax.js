@@ -1,9 +1,9 @@
 jQuery(document).ready(function($){
 
-    $('#modalmorereviewsbtn').on('click', function(e){
+    $('.modalmorereviewsbtn').on('click', function(e){
         e.preventDefault();
-        var productId = $('#modalmorereviewsbtn').attr('sid');
-        var cats = $('#modalmorereviewsbtn').attr('cats');
+        var productId = $('.modalmorereviewsbtn').attr('sid');
+        var cats = $('.modalmorereviewsbtn').attr('cats');
         var data = {
             'action' : 'ajaxGetAllReviews',
             'pref_cs' : productId,
