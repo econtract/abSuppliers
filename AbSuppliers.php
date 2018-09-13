@@ -107,7 +107,7 @@ class AbSuppliers {
         wp_localize_script('suppliers-ajax', 'suppliers_ajax_vars',
             array(
                 'ajax_url' => admin_url('admin-ajax.php'),
-                'site_url' => get_home_url(),
+                'site_url' => pll_home_url(),
                 'template_uri' => get_template_directory_uri(),
                 'lang' => getLanguage(),
             )
