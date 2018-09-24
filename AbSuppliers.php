@@ -375,7 +375,8 @@ class AbSuppliers {
             'link' => '#',
             'detaillevel' => 'logo',
             'mod'        => '6',
-            'partners_only' => false
+            'partners_only' => false,
+	        'pref_cs' => []
 
         ], $atts, 'anb_suppliers');
 
@@ -973,16 +974,19 @@ class AbSuppliers {
 
         $atts = $this->prepareShortCodeAttributes($atts);
 
+	    $queryParams = $this->getUriQuery() + $atts;
+
+	    $selectedProviders = (!empty($queryParams) && isset($queryParams['pref_cs'])? $queryParams['pref_cs']: [] ) ;
+
+	    //now its time to unset pref_cs because we want to fetch all suppliers
+	    unset($atts['pref_cs']);
+
         $getLogos = $this->getSupplierLogos($atts);
         $supplierSorted = $this->sortSupplier(
             $getLogos,
             $atts,
             SORT_DESC
         );
-
-        $queryParams = $this->getUriQuery();
-
-        $selectedProviders = (!empty($queryParams) && isset($queryParams['pref_cs'])? $queryParams['pref_cs']: [] ) ;
 
         foreach ($supplierSorted as $supplier) {
 
