@@ -364,7 +364,7 @@ class AbSuppliers {
 
         // override default attributes with user attributes
         $atts = shortcode_atts([
-            'lang' => Locale::getPrimaryLanguage(get_locale()),
+            'lang' => getLanguage(),
             'segments' => $atts['sg'] ?: $this->segments,
             'products' => $atts['cat'] ?: $this->productTypes,
             'sort-by' => 'name',
@@ -1131,6 +1131,7 @@ class AbSuppliers {
 
             if ($id == $supplier['id']) {
                 $name = $supplier['name'];
+                break;
             }
         }
 
