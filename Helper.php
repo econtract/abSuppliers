@@ -66,7 +66,7 @@ trait Helper {
 
 		$router->add_route('anb_route_product', array(
 			'path' => '^'. pll__('brands').'/(.+?)/((?!'. pll__('results').').)+/?$',
-			'query_vars' => ['sid' => $this->getUriSegment(2), 'productid' => $this->getUriSegment(3), 'startScriptTime' => $startTime],
+			'query_vars' => ['sid' => $this->getUriSegment(2), 'productid' => $this->getUriSegment(3), 'startScriptTime' => $startTime, 'via_route' => true],
 			'page_callback' => [$this, 'emptyCallback'],
 			'page_arguments' =>  [],
 			'title_callback' => [$this, 'emptyCallback'],
@@ -81,7 +81,7 @@ trait Helper {
 
 		$router->add_route('anb_route_product_new', array(
 			'path' => '^'.pll__('telecom').'/'. pll__('brands').'/(.+?)/((?!'. pll__('results').').)+/?$',
-			'query_vars' => ['sid' => $this->getUriSegment(3), 'productid' => $this->getUriSegment(4), 'startScriptTime' => $startTime],
+			'query_vars' => ['sid' => $this->getUriSegment(3), 'productid' => $this->getUriSegment(4), 'startScriptTime' => $startTime, 'via_route' => true],
 			'page_callback' => [$this, 'emptyCallback'],
 			'page_arguments' =>  [],
 			'title_callback' => [$this, 'emptyCallback'],
@@ -96,7 +96,7 @@ trait Helper {
 
 		$router->add_route('anb_route_product_energy', array(
 			'path' => '^'.pll__('energy').'/'.pll__('brands').'/(.+?)/((?!'. pll__('results').').)+/?$',
-			'query_vars' => ['sid' => $this->getUriSegment(3), 'productid' => $this->getUriSegment(4), 'startScriptTime' => $startTime],
+			'query_vars' => ['sid' => $this->getUriSegment(3), 'productid' => $this->getUriSegment(4), 'startScriptTime' => $startTime, 'via_route' => true],
 			'page_callback' => [$this, 'emptyCallback'],
 			'page_arguments' =>  [],
 			'title_callback' => [$this, 'emptyCallback'],
@@ -111,7 +111,7 @@ trait Helper {
 
         $router->add_route('anb_route_brand', array(
             'path' => '^'. pll__('brands').'/(.*?)$',
-            'query_vars' => ['startScriptTime' => $startTime, 'supplier' => $supplier],
+            'query_vars' => ['startScriptTime' => $startTime, 'supplier' => $supplier, 'via_route' => true],
             'page_callback' => array($this, 'suppliersCallback'),
             'page_arguments' =>  [],
             'access_callback' => TRUE,
@@ -124,7 +124,7 @@ trait Helper {
 
 		$router->add_route('anb_route_brand_details', array(
 			'path' => '^' . pll__('telecom') . '/' . pll__('brands').'/(.*?)$',
-			'query_vars' => ['startScriptTime' => $startTime, 'supplier' => $supplier],
+			'query_vars' => ['startScriptTime' => $startTime, 'supplier' => $supplier, 'via_route' => true],
 			'page_callback' => array($this, 'suppliersCallback'),
 			'page_arguments' =>  [],
 			'access_callback' => TRUE,
@@ -137,7 +137,7 @@ trait Helper {
 
 		$router->add_route('anb_route_brand_details_energy', array(
 			'path' => '^' . pll__('energy') . '/' . pll__('brands').'/(.*?)$',
-			'query_vars' => ['startScriptTime' => $startTime, 'supplier' => $supplier],
+			'query_vars' => ['startScriptTime' => $startTime, 'supplier' => $supplier, 'via_route' => true],
 			'page_callback' => array($this, 'suppliersCallback'),
 			'page_arguments' =>  [],
 			'access_callback' => TRUE,
@@ -151,7 +151,7 @@ trait Helper {
         //Same as the previous route, just allowing /brands/<provider>/results as valid link as well, currently its invalid
         $router->add_route('anb_route_brand_results', array(
             'path' => '^'.pll__('telecom').'/'.pll__('brands').'/(.+?)/'. pll__('results').'/?$',
-            'query_vars' => ['startScriptTime' => $startTime, 'supplier' => $supplier],
+            'query_vars' => ['startScriptTime' => $startTime, 'supplier' => $supplier, 'via_route' => true],
             'page_callback' => array($this, 'suppliersCallback'),
             'page_arguments' =>  [],
             'access_callback' => TRUE,
@@ -164,7 +164,7 @@ trait Helper {
 
 		$router->add_route('anb_route_brand_results_energy', array(
 			'path' => '^'.pll__('energy').'/'. pll__('brands').'/(.+?)/'. pll__('results').'/?$',
-			'query_vars' => ['startScriptTime' => $startTime, 'supplier' => $supplier],
+			'query_vars' => ['startScriptTime' => $startTime, 'supplier' => $supplier, 'via_route' => true],
 			'page_callback' => array($this, 'suppliersCallback'),
 			'page_arguments' =>  [],
 			'access_callback' => TRUE,
