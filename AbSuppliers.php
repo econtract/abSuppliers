@@ -546,7 +546,7 @@ class AbSuppliers {
 	 * @return mixed
 	 */
 	public function catsToArray( $atts ) {
-		if ( $atts['cat'] && ! empty( trim( $atts['cat'] ) ) ) {
+		if ( $atts['cat'] && ! empty( trim( $atts['cat'] ) ) && is_string($atts) ) {
 			//handling both space coma and without space comma
 			$atts['cat'] = explode( ',', $atts['cat'] );
 			$atts['cat'] = array_map( 'trim', $atts['cat'] );//triming each value
@@ -1120,9 +1120,8 @@ class AbSuppliers {
      * @param $id
      * @return string
      */
-    public function getSupplierNameById($id)
+    public function getSupplierNameById($id, $atts = [])
     {
-        $atts = [ ];
         $name = '';
 
         list($atts, $supplierSorted) = $this->preparedSuppliersLogoData($atts);
