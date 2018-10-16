@@ -978,6 +978,10 @@ class AbSuppliers {
 
 	    $selectedProviders = (!empty($queryParams) && isset($queryParams['pref_cs'])? $queryParams['pref_cs']: [] ) ;
 
+	    if(empty($selectedProviders)){
+            $selectedProviders = $_GET['pref_cs'];
+        }
+
 	    //now its time to unset pref_cs because we want to fetch all suppliers
 	    unset($atts['pref_cs']);
 
