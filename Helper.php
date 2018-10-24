@@ -174,6 +174,32 @@ trait Helper {
 				get_template_directory() . 'page-provider-details-energy.php'
 			)
 		));
+
+        $router->add_route('anb_route_faq_answer_telecom', array(
+            'path' => '^'.pll__('telecom').'/'. pll__('faqs').'/(.*?)$',
+            'query_vars' => ['startScriptTime' => $startTime, 'via_route' => true],
+            'page_callback' => array($this, 'emptyCallback'),
+            'page_arguments' =>  [],
+            'access_callback' => TRUE,
+            'title' => __( '' ),
+            'template' => array(
+                'faq-terms-answer.php',
+                get_template_directory() . 'faq-terms-answer.php'
+            )
+        ));
+
+        $router->add_route('anb_route_faq_answer_energie', array(
+            'path' => '^'.pll__('energy').'/'. pll__('faqs').'/(.*?)$',
+            'query_vars' => ['startScriptTime' => $startTime, 'via_route' => true],
+            'page_callback' => array($this, 'emptyCallback'),
+            'page_arguments' =>  [],
+            'access_callback' => TRUE,
+            'title' => __( '' ),
+            'template' => array(
+                'faq-terms-answer.php',
+                get_template_directory() . 'faq-terms-answer.php'
+            )
+        ));
 	}
 
     /**
