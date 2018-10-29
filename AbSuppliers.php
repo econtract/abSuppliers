@@ -31,9 +31,7 @@ class AbSuppliers {
      */
     public $apiEndpoint = "http://api.econtract.be/";//Better to take it from Admin settings
 
-    /**
-     * @var mixed
-     */
+	/** @var Aanbieders mixed */
     public $anbApi;
 
     /**
@@ -546,7 +544,7 @@ class AbSuppliers {
 	 * @return mixed
 	 */
 	public function catsToArray( $atts ) {
-		if ( $atts['cat'] && ! empty( trim( $atts['cat'] ) ) && is_string($atts) ) {
+		if ( $atts['cat'] && ! empty( trim( $atts['cat'] ) ) && is_string($atts['cat']) ) {
 			//handling both space coma and without space comma
 			$atts['cat'] = explode( ',', $atts['cat'] );
 			$atts['cat'] = array_map( 'trim', $atts['cat'] );//triming each value
@@ -978,6 +976,10 @@ class AbSuppliers {
 
 	    $selectedProviders = (!empty($queryParams) && isset($queryParams['pref_cs'])? $queryParams['pref_cs']: [] ) ;
 
+	    if(empty($selectedProviders)){
+            $selectedProviders = $_GET['pref_cs'];
+        }
+
 	    //now its time to unset pref_cs because we want to fetch all suppliers
 	    unset($atts['pref_cs']);
 
@@ -1176,6 +1178,40 @@ class AbSuppliers {
             return $resultMin;
         }
         return $resultMin;
+    }
+
+    public function getSupplierDetail($supplierId, $params = [], $enableCache = true, $cacheDurationSeconds = 14400) {
+	    if(defined('SUPPLIER_API_CACHE_DURATION')) {
+		    $cacheDurationSeconds = SUPPLIER_API_CACHE_DURATION;
+	    }
+
+	    $supplier = null;
+
+	    //generate key from params to store in cache
+	    $displayText = "API Call (getSupplierDetail) inside getSupplierDetail";
+	    $start = getStartTime();
+
+	    //remove empty values
+	    $params = array_filter($params);
+
+	    if ($enableCache && !isset($_GET['no_cache'])) {
+		    $cacheKey = md5($supplierId . serialize($params)) . ":getSupplierDetail";
+		    $supplier = mycache_get($cacheKey);
+
+		    if($supplier === false || empty($supplier)) {
+			    $supplier = json_encode($this->anbApi->getSupplierDetail( $supplierId, $params ));
+			    mycache_set($cacheKey, $supplier, $cacheDurationSeconds);
+		    } else {
+			    $displayText = "API Call Cached (getSupplierDetail) inside getSupplierDetail";
+		    }
+	    } else {
+		    $supplier = json_encode($this->anbApi->getSupplierDetail($supplierId, $params));
+	    }
+
+	    $finish = getEndTime();
+	    displayCallTime($start, $finish, $displayText);
+
+	    return ($supplier) ? json_decode($supplier, true) : $supplier;
     }
 
     //echo do_shortcode('[anb_suppliers mark-up="div" mark-up-class="col-sm-2 serviceProvider" lang="nl" segments="sme" products="internet" mod="6"]'); />
