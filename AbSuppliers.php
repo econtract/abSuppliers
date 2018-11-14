@@ -509,6 +509,42 @@ class AbSuppliers {
         }
     }
 
+	public function supplierDetailsWithProducts( $supplier="", $supplierDetailParams = [] )
+	{
+		if(empty($supplier)) {
+			$supplier = $this->getUriSegment(2);
+		}
+
+		$lang = getLanguage();
+
+		$getSupplier = $this->getSuppliers([
+			'pref_cs' => $supplier,
+			'lang'    => $lang
+		]);
+
+		$params = [
+			'pref_cs'     => [$getSupplier[0]['supplier_id']],
+			'lang'        => $lang,
+			'cat'         => $this->productTypes,
+			'detaillevel' => ['reviews']
+		];
+
+		$directProductCall = false;
+		$prefCs = $params['pref_cs'];
+
+		//make direct getProducts call to grab all combinations
+		$directProductCall = true;
+		unset($params['pref_cs']);
+
+		$params['sid'] = $getSupplier[0]['supplier_id'];
+		if($forceCallToCompare) {
+			unset($params['sid']);
+			$params['pref_cs'] = $prefCs;//compare doesn't use sid, that is used by product api
+		}
+
+		return $this->getSupplierDetail($getSupplier[0]['supplier_id'], $supplierDetailParams);
+	}
+
 	/**
 	 * @param $atts
 	 *
@@ -840,8 +876,6 @@ class AbSuppliers {
                 if (strlen($string) > 220) {
                     $truncate = true;
                 }
-
-
 
                 $html .= "<div class='col-md-5 infoPanel'>
                             <h6>".$review['texts']['title']."</h6>
