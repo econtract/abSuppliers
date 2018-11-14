@@ -515,7 +515,7 @@ class AbSuppliers {
 			$supplier = $this->getUriSegment(2);
 		}
 
-		$lang = $this->getLanguage();
+		$lang = getLanguage();
 
 		$getSupplier = $this->getSuppliers([
 			'pref_cs' => $supplier,
