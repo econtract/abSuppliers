@@ -11,7 +11,7 @@ jQuery(document).ready(function($){
             'cats' : cats,
         };
         $('#loadallreviews').html('');
-        $('#loadallreviews').html('<div class="ajaxIconWrapper"><div class="ajaxIcon"><img src="' + suppliers_ajax_vars.template_uri + '/images/common/icons/ajaxloader.png" alt="Loading..."></div></div>');
+        $('#loadallreviews').html('<div class="ajaxIconWrapper"><div class="ajaxIcon"><img src="' + suppliers_ajax_vars.template_uri + '/images/common/icons/ajaxloader.png" alt="' + suppliers_ajax_vars.trans_loading_dots + '"></div></div>');
 
         $.get(suppliers_ajax_vars.site_url + '/api/?load=Suppliers', data, function (response) {
             $('#loadallreviews').html(response);
