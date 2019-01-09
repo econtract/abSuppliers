@@ -101,13 +101,14 @@ class AbSuppliers {
 
     function enqueueScripts()
     {
-        wp_enqueue_script('suppliers-ajax', plugins_url('/js/suppliers-ajax.js', __FILE__), array('jquery'), '1.0.1', true);
+        wp_enqueue_script('suppliers-ajax', plugins_url('/js/suppliers-ajax.js', __FILE__), array('jquery'), '1.0.2', true);
         wp_localize_script('suppliers-ajax', 'suppliers_ajax_vars',
             array(
                 'ajax_url' => admin_url('admin-ajax.php'),
                 'site_url' => pll_home_url(),
                 'template_uri' => get_template_directory_uri(),
                 'lang' => getLanguage(),
+                'trans_loading_dots'    => pll__('Loading...')
             )
         );
     }
