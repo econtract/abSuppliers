@@ -1110,7 +1110,7 @@ class AbSuppliers {
      * @param $isPartner
      * @return mixed
      */
-    public function getSupplierIds($isPartner)
+    public function getSupplierIds($isPartner, $atts = [])
     {
         $ids = [];
 
