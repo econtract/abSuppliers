@@ -201,6 +201,19 @@ trait Helper {
             )
         ));
 
+        $router->add_route('anb_route_faq_answer_mobile_belle_data', array(
+            'path' => '^mobiel-bellen-data/'. pll__('faqs').'/(.*?)/(.*?)$',
+            'query_vars' => ['startScriptTime' => $startTime, 'via_route' => true],
+            'page_callback' => array($this, 'emptyCallback'),
+            'page_arguments' =>  [],
+            'access_callback' => TRUE,
+            'title' => __( '' ),
+            'template' => array(
+                'faq-terms-answer.php',
+                get_template_directory() . 'faq-terms-answer.php'
+            )
+        ));
+
         $router->add_route('anb_route_faq_terms_telecom', array(
             'path' => '^'.pll__('telecom').'/'. pll__('faqs').'/(.*?)$',
             'query_vars' => ['startScriptTime' => $startTime, 'via_route' => true],
@@ -216,6 +229,19 @@ trait Helper {
 
         $router->add_route('anb_route_faq_terms_energie', array(
             'path' => '^'.pll__('energy').'/'. pll__('faqs').'/(.*?)$',
+            'query_vars' => ['startScriptTime' => $startTime, 'via_route' => true],
+            'page_callback' => array($this, 'emptyCallback'),
+            'page_arguments' =>  [],
+            'access_callback' => TRUE,
+            'title' => __( '' ),
+            'template' => array(
+                'faqs-terms.php',
+                get_template_directory() . 'faqs-terms.php'
+            )
+        ));
+
+        $router->add_route('anb_route_faq_terms_mobile_belle_data', array(
+            'path' => '^mobiel-bellen-data/'. pll__('faqs').'/(.*?)$',
             'query_vars' => ['startScriptTime' => $startTime, 'via_route' => true],
             'page_callback' => array($this, 'emptyCallback'),
             'page_arguments' =>  [],
