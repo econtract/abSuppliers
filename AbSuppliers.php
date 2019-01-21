@@ -857,14 +857,14 @@ class AbSuppliers {
                 $html .= "<div class='col-md-5 infoPanel'>
                             <h6>".$review['texts']['title']."</h6>
                             <p". (($truncate)? " class='truncate'":" "   ).'>'.$string."</p>
-                            ".(($truncate)? "<a href='#' class='readMore'><i class='fa fa-chevron-right'></i> Read more</a>":" ")."
+                            ". (($truncate)? "<a href='#' class='readMore'><i class='fa fa-chevron-right'></i> ".pll__('Read more')."</a>":" ") . "
                            
                             <p class='infoStamp'>".date("d/m/Y, H:i", strtotime($review['date'])).' - '.$review['author'].', '.$review['city']."</p>
                             <!--<a href='#'><i class='fa fa-thumbs-o-up'></i>Is this useful?</a>-->
                         </div>
                         <div class='col-md-3 ratingPanel'>
                             <div class='row header'>
-                                <div class='col-xs-8 ratingTitle'>".pll__('Total Rating')."</div>
+                                <div class='col-xs-8 ratingTitle'>".pll__('Total rating')."</div>
                                 <div class='col-xs-4 countTitle'>".displayReviewRating($review['score'])."</div>
                             </div>
                             ".$this->fetchReviewRatings($review['ratings'])."
