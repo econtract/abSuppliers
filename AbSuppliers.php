@@ -557,7 +557,7 @@ class AbSuppliers {
 	 * @return mixed
 	 */
 	public function catsToArray( $atts ) {
-		if ( $atts['cat'] && ! empty( trim( $atts['cat'] ) ) && is_string($atts['cat']) ) {
+		if ( isset($atts['cat']) && ! empty( trim( $atts['cat'] ) ) && is_string($atts['cat']) ) {
 			//handling both space coma and without space comma
 			$atts['cat'] = explode( ',', $atts['cat'] );
 			$atts['cat'] = array_map( 'trim', $atts['cat'] );//triming each value
