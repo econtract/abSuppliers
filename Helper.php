@@ -333,7 +333,7 @@ trait Helper {
 
         $router->add_route('anb_sitemap_products', array(
             'path' => '^sitemap_products.xml',
-            'query_vars' => [],
+            'query_vars' => ['startScriptTime' => $startTime,'via_route' => true],
             'page_callback' => [],
             'page_arguments' =>  [],
             'title_callback' => [],
