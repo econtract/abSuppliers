@@ -331,6 +331,22 @@ trait Helper {
             )
         ));
 
+        $router->add_route('anb_sitemap_products', array(
+            'path' => '^sitemap_products.xml',
+            'query_vars' => [],
+            'page_callback' => [],
+            'page_arguments' =>  [],
+            'title_callback' => [],
+            'title_arguments' => [],
+            'access_callback' => true,
+            'title' => __( '' ),
+            'template' => array(
+                'sitemaps/products.php',
+                get_template_directory() . 'sitemaps/products.php'
+            )
+        ));
+
+
         //echo '<pre>'.print_r($router, true).'</pre>';
 	}
 
