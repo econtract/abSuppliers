@@ -64,21 +64,6 @@ trait Helper {
 			$startTime = getStartTime();
 		}
 
-		$router->add_route('anb_route_product', array(
-			'path' => '^'. pll__('brands').'/(.+?)/((?!'. pll__('results').').)+/?$',
-			'query_vars' => ['sid' => $this->getUriSegment(2), 'productid' => $this->getUriSegment(3), 'startScriptTime' => $startTime, 'via_route' => true],
-			'page_callback' => [$this, 'emptyCallback'],
-			'page_arguments' =>  [],
-			'title_callback' => [$this, 'emptyCallback'],
-			'title_arguments' => [$this->getUriSegment(2), $this->getUriSegment(3)],
-			'access_callback' => true,
-			'title' => __( '' ),
-			'template' => array(
-				'anb-product.php',
-				get_template_directory() . 'anb-product.php'
-			)
-		));
-
 		$router->add_route('anb_route_product_new', array(
 			'path' => '^'.pll__('telecom').'/'. pll__('brands').'/(.+?)/((?!'. pll__('results').').)+/?$',
 			'query_vars' => ['sid' => $this->getUriSegment(3), 'productid' => $this->getUriSegment(4), 'startScriptTime' => $startTime, 'via_route' => true],
@@ -108,19 +93,6 @@ trait Helper {
 				get_template_directory() . 'anb-product-energy.php'
 			)
 		));
-
-        $router->add_route('anb_route_brand', array(
-            'path' => '^'. pll__('brands').'/(.*?)$',
-            'query_vars' => ['startScriptTime' => $startTime, 'supplier' => $supplier, 'via_route' => true],
-            'page_callback' => array($this, 'suppliersCallback'),
-            'page_arguments' =>  [],
-            'access_callback' => TRUE,
-            'title' => __( '' ),
-            'template' => array(
-                'page-provider-details.php',
-                get_template_directory() . 'page-provider-details.php'
-            )
-        ));
 
 		$router->add_route('anb_route_brand_details', array(
 			'path' => '^' . pll__('telecom') . '/' . pll__('brands').'/(.*?)$',
