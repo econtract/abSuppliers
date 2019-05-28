@@ -292,8 +292,8 @@ trait Helper {
             )
         ));
 
-        $router->add_route('anb_route_faq_terms_telecom', array(
-            'path' => '^'.pll__('telecom').'/'. pll__('faqs').'/(.*?)$',
+        $router->add_route('anb_route_files_terms_telecom', array(
+            'path' => '^'.pll__('telecom').'/'. pll__('files').'/(.*?)$',
             'query_vars' => ['startScriptTime' => $startTime, 'via_route' => true],
             'page_callback' => array($this, 'emptyCallback'),
             'page_arguments' =>  [],
