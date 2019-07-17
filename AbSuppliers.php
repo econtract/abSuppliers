@@ -1009,7 +1009,7 @@ class AbSuppliers {
                 $html .= '<div class="NonPartnersResult">';
             }
 
-            $checked = (in_array($supplier['id'], $selectedProviders ) ? 'checked' : '');
+            $checked = (is_array($selectedProviders) && in_array($supplier['id'], $selectedProviders ) ? 'checked' : '');
 
             $html .= '<div class="checkbox fancyCheck small">
                         <input type="checkbox"  name="pref_cs[]" '.$checked.'  value="' . $supplier['id'] . '" id="' . $supplier['name'] . '">
