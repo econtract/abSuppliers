@@ -287,6 +287,42 @@ class AbSuppliers {
         return $response;
     }
 
+    public function displaySupplierPartnersForEnergy($atts)
+    {
+        $atts['partners_only'] = true;
+
+        $atts = $this->processMultipleProductCats($atts);
+
+        list($atts, $supplierLogos) = $this->preparedSuppliersLogoData($atts);
+
+        $breakPoint = $atts['mod'];
+        $counter    = 0;
+        $response   = '<div class="row">';
+
+        foreach ($supplierLogos as $supplier) {
+            $atts['link'] = $this->generateProviderLink($atts, $supplier);
+
+            // If $counter is divisible by $breakpoint mod, create new row
+            if ($counter % $breakPoint == 0 && $counter != 0) {
+                // New div row
+                $response .= '</div><div class="row">';
+            }
+            $response .= '<' . $atts['mark-up'] .
+                ' class="' . $atts['mark-up-class'] . '">' .
+                '<a href="' . $atts['link'] . '"' .
+                ' title="' . $supplier['name'] . '">' .
+                '<img src="' . $supplier['logo'] . '"' .
+                ' alt="' . $supplier['name'] . '">' .
+                '</a>' .
+                '</' . $atts['mark-up'] . '>';
+            $counter++;
+        }
+
+        $response .= '</div>';
+
+        return $response;
+    }
+
     /**
      * @param $atts
      * @return string
