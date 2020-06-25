@@ -287,6 +287,45 @@ class AbSuppliers {
         return $response;
     }
 
+    public function displaySupplierPartnersForEnergy($atts)
+    {
+        $atts['partners_only'] = true;
+        $atts['cat']           = ['dualfuel_pack', 'electricity', 'gas'];
+        $atts['mod']           = !empty($atts['mod']) ? $atts['mod'] : 5;
+        $atts['mark-up']       = !empty($atts['mark-up']) ? $atts['mark-up'] : 'div';
+        $atts['mark-up-class'] = !empty($atts['mark-up-class']) ? $atts['mark-up-class'] : '';
+
+        $atts = $this->processMultipleProductCats($atts);
+
+        list($atts, $supplierLogos) = $this->preparedSuppliersLogoData($atts);
+
+        $breakPoint = $atts['mod'];
+        $response   = '<div class="row">';
+
+        foreach ($supplierLogos as $index => $supplier) {
+            $atts['link'] = $this->generateProviderLink($atts, $supplier);
+
+            // If index is divisible by $breakpoint mod, create new row
+            if ($index % $breakPoint === 0 && $index !== 0) {
+                // New div row
+                $response .= '</div><div class="row">';
+            }
+
+            $response .= '<' . $atts['mark-up'] .
+                ' class="' . $atts['mark-up-class'] . '">' .
+                '<a href="' . $atts['link'] . '"' .
+                ' title="' . $supplier['name'] . '">' .
+                '<img src="' . $supplier['logo'] . '"' .
+                ' alt="' . $supplier['name'] . '">' .
+                '</a>' .
+                '</' . $atts['mark-up'] . '>';
+        }
+
+        $response .= '</div>';
+
+        return $response;
+    }
+
     /**
      * @param $atts
      * @return string
