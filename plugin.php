@@ -24,7 +24,7 @@ $supplier = wpal_create_instance(AbSuppliers::class);
 add_shortcode( 'anb_suppliers_count', array( $supplier, 'countSuppliersLogo' ) );
 add_shortcode( 'anb_suppliers_overview', array( $supplier, 'prepareSuppliersForOverview' ) );
 
-add_shortcode( 'anb_supplier_partners', array( $supplier, 'displaySupplierPartners' ) );
+add_shortcode( 'anb_supplier_partners', array($supplier, 'displayPartners'));
 add_shortcode( 'anb_supplier_partners_energy', array( $supplier, 'displaySupplierPartnersForEnergy' ) );
 
 add_shortcode( 'anb_supplier_reviews', array( $supplier, 'showReviews' ) );

@@ -287,6 +287,38 @@ class AbSuppliers {
         return $response;
     }
 
+    /**
+     * @param array $atts
+     * @return string
+     */
+    public function displayPartners($atts)
+    {
+        $atts['partners_only'] = true;
+
+        $atts = $this->processMultipleProductCats($atts);
+
+        list($atts, $supplierLogos) = $this->preparedSuppliersLogoData($atts);
+
+        $response = '<' . $atts['wrapper'] . ' class="' . $atts['wrapper-class'] . '">';
+
+        foreach ($supplierLogos as $supplier) {
+            $atts['link'] = $this->generateProviderLink($atts, $supplier);
+
+            $response .= '<' . $atts['mark-up'] .
+                ' class="' . $atts['mark-up-class'] . '">' .
+                '<a href="' . $atts['link'] . '"' .
+                ' title="' . $supplier['name'] . '">' .
+                '<img src="' . $supplier['logo'] . '"' .
+                ' alt="' . $supplier['name'] . '">' .
+                '</a>' .
+                '</' . $atts['mark-up'] . '>';
+        }
+
+        $response .= '</' . $atts['wrapper'] . '>';
+
+        return $response;
+    }
+
     public function displaySupplierPartnersForEnergy($atts)
     {
         $atts['partners_only'] = true;
