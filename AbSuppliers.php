@@ -319,11 +319,12 @@ class AbSuppliers {
         return $response;
     }
 
-    public function displaySupplierPartnersForEnergy($atts)
+    public function displaySupplierPartnersForFooter($atts)
     {
         $atts['partners_only'] = true;
-        $atts['cat']           = ['dualfuel_pack', 'electricity', 'gas'];
-        $atts['mod']           = !empty($atts['mod']) ? $atts['mod'] : 5;
+        $atts['cat']           = !empty($atts['cat']) ? $atts['cat'] : ['dualfuel_pack', 'electricity', 'gas'];
+        $atts['mod']           = !empty($atts['mod']) ? $atts['mod'] : 9;
+        $atts['max']           = !empty($atts['max']) ? $atts['max'] : 9;
         $atts['mark-up']       = !empty($atts['mark-up']) ? $atts['mark-up'] : 'div';
         $atts['mark-up-class'] = !empty($atts['mark-up-class']) ? $atts['mark-up-class'] : '';
 
@@ -333,6 +334,8 @@ class AbSuppliers {
 
         $breakPoint = $atts['mod'];
         $response   = '<div class="row">';
+
+        $supplierLogos = array_slice($supplierLogos, 0, $atts['max']);
 
         foreach ($supplierLogos as $index => $supplier) {
             $atts['link'] = $this->generateProviderLink($atts, $supplier);
@@ -447,7 +450,8 @@ class AbSuppliers {
             'mark-up-class' => '',
             'link' => '#',
             'detaillevel' => 'logo',
-            'mod'        => '6',
+            'mod'        => '9',
+            'max'        => '9',
             'partners_only' => false,
 	        'pref_cs' => []
 
