@@ -441,6 +441,8 @@ class AbSuppliers {
             'sort-by' => 'name',
             'image-size' => '100x70',
             'image-color-type' => 'transparent',
+            'wrapper' => 'div',
+            'wrapper-class' => 'row',
             'mark-up' => 'div',
             'mark-up-class' => '',
             'link' => '#',
