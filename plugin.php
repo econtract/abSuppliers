@@ -20,12 +20,11 @@ if ( ! defined( 'WPINC' ) ) {
 }
 
 $supplier = wpal_create_instance(AbSuppliers::class);
-//add_shortcode( 'anb_suppliers', array( $supplier, 'prepareSuppliersForLandingPage' ) );
 add_shortcode( 'anb_suppliers_count', array( $supplier, 'countSuppliersLogo' ) );
 add_shortcode( 'anb_suppliers_overview', array( $supplier, 'prepareSuppliersForOverview' ) );
 
-add_shortcode( 'anb_supplier_partners', array( $supplier, 'displaySupplierPartners' ) );
-add_shortcode( 'anb_supplier_partners_energy', array( $supplier, 'displaySupplierPartnersForEnergy' ) );
+add_shortcode('anb_supplier_partners', array($supplier, 'displayPartners'));
+add_shortcode( 'anb_supplier_partners_footer', array( $supplier, 'displaySupplierPartnersForFooter' ) );
 
 add_shortcode( 'anb_supplier_reviews', array( $supplier, 'showReviews' ) );
 add_shortcode( 'anb_supplier_all_reviews', array( $supplier, 'showAllReviews' ) );

@@ -287,11 +287,44 @@ class AbSuppliers {
         return $response;
     }
 
-    public function displaySupplierPartnersForEnergy($atts)
+    /**
+     * @param array $atts
+     * @return string
+     */
+    public function displayPartners($atts)
     {
         $atts['partners_only'] = true;
-        $atts['cat']           = ['dualfuel_pack', 'electricity', 'gas'];
-        $atts['mod']           = !empty($atts['mod']) ? $atts['mod'] : 5;
+
+        $atts = $this->processMultipleProductCats($atts);
+
+        list($atts, $supplierLogos) = $this->preparedSuppliersLogoData($atts);
+
+        $response = '<' . $atts['wrapper'] . ' class="' . $atts['wrapper-class'] . '">';
+
+        foreach ($supplierLogos as $supplier) {
+            $atts['link'] = $this->generateProviderLink($atts, $supplier);
+
+            $response .= '<' . $atts['mark-up'] .
+                ' class="' . $atts['mark-up-class'] . '">' .
+                '<a href="' . $atts['link'] . '"' .
+                ' title="' . $supplier['name'] . '">' .
+                '<img src="' . $supplier['logo'] . '"' .
+                ' alt="' . $supplier['name'] . '">' .
+                '</a>' .
+                '</' . $atts['mark-up'] . '>';
+        }
+
+        $response .= '</' . $atts['wrapper'] . '>';
+
+        return $response;
+    }
+
+    public function displaySupplierPartnersForFooter($atts)
+    {
+        $atts['partners_only'] = true;
+        $atts['cat']           = !empty($atts['cat']) ? $atts['cat'] : ['dualfuel_pack', 'electricity', 'gas'];
+        $atts['mod']           = !empty($atts['mod']) ? $atts['mod'] : 9;
+        $atts['max']           = !empty($atts['max']) ? $atts['max'] : 9;
         $atts['mark-up']       = !empty($atts['mark-up']) ? $atts['mark-up'] : 'div';
         $atts['mark-up-class'] = !empty($atts['mark-up-class']) ? $atts['mark-up-class'] : '';
 
@@ -301,6 +334,8 @@ class AbSuppliers {
 
         $breakPoint = $atts['mod'];
         $response   = '<div class="row">';
+
+        $supplierLogos = array_slice($supplierLogos, 0, $atts['max']);
 
         foreach ($supplierLogos as $index => $supplier) {
             $atts['link'] = $this->generateProviderLink($atts, $supplier);
@@ -409,11 +444,14 @@ class AbSuppliers {
             'sort-by' => 'name',
             'image-size' => '100x70',
             'image-color-type' => 'transparent',
+            'wrapper' => 'div',
+            'wrapper-class' => 'row',
             'mark-up' => 'div',
             'mark-up-class' => '',
             'link' => '#',
             'detaillevel' => 'logo',
-            'mod'        => '6',
+            'mod'        => '9',
+            'max'        => '9',
             'partners_only' => false,
 	        'pref_cs' => []
 
