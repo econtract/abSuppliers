@@ -140,12 +140,6 @@ class AbSuppliers {
 	    //remove empty values
 	    $params = array_filter($params);
 
-	    if($_GET['debug']) {
-		    echo "<pre>supplier logo params>>>";
-		    print_r($params);
-		    echo "</pre>";
-	    }
-
         if ($enableCache && !isset($_GET['no_cache'])) {
 	    	$keyParams = $atts;
 	    	if(isset($params['cat'])) {
@@ -439,8 +433,8 @@ class AbSuppliers {
         // override default attributes with user attributes
         $atts = shortcode_atts([
             'lang' => getLanguage(),
-            'segments' => $atts['sg'] ?: $this->segments,
-            'products' => $atts['cat'] ?: $this->productTypes,
+            'segments' => isset($atts['sg']) ? $atts['sg'] : $this->segments,
+            'products' => isset($atts['cat']) ? $atts['cat'] : $this->productTypes,
             'sort-by' => 'name',
             'image-size' => '100x70',
             'image-color-type' => 'transparent',
@@ -936,7 +930,7 @@ class AbSuppliers {
                             <h6>".$review['texts']['title']."</h6>
                             <p". (($truncate)? " class='truncate'":" "   ).'>'.$string."</p>
                             ". (($truncate)? "<a href='#' class='readMore'><i class='fa fa-chevron-right'></i> ".pll__('Read more')."</a>":" ") . "
-                           
+
                             <p class='infoStamp'>".date("d/m/Y, H:i", strtotime($review['date'])).' - '.$review['author'].', '.$review['city']."</p>
                             <!--<a href='#'><i class='fa fa-thumbs-o-up'></i>Is this useful?</a>-->
                         </div>

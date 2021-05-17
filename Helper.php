@@ -24,8 +24,8 @@ trait Helper {
      */
     public function getUriSegment($n)
     {
-        $segment = $this->getUriSegments();
-        return count($segment)>0&&count($segment)>=($n-1) ? $segment[$n] : '';
+        $segments = $this->getUriSegments();
+        return isset($segments[$n]) ? $segments[$n] : '';
     }
 
     /**

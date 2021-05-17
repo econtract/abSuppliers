@@ -28,5 +28,3 @@ add_shortcode( 'anb_supplier_partners_footer', array( $supplier, 'displaySupplie
 
 add_shortcode( 'anb_supplier_reviews', array( $supplier, 'showReviews' ) );
 add_shortcode( 'anb_supplier_all_reviews', array( $supplier, 'showAllReviews' ) );
-
-
